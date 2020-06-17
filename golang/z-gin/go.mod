@@ -1,4 +1,4 @@
-module gin-web
+module z-gin
 
 go 1.14
 

@@ -7,9 +7,11 @@ import (
 	"text/template"
 	"time"
 
-	"gitee.com/fearless11/golang/code/context/google"
-	"gitee.com/fearless11/golang/code/context/userip"
+	"mycontext/google"
+	"mycontext/userip"
 )
+
+// 源项目： https://github.com/golang/blog/tree/master/content/context
 
 func main() {
 	http.HandleFunc("/search", handleSearch)

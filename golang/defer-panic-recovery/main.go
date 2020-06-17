@@ -3,33 +3,39 @@ package main
 import "fmt"
 
 func main() {
-	// a()
-	// fmt.Println(b())
-	// c()
-	d()
+	// deferParam()
+	// fmt.Println(deferIadd())
+	// deferFILO()
+	recoveryPanic()
 }
+
+/*
+defer: 延迟处理
+panic: 中断程序
+recovery: 截取panic恢复程序
+*/
 
 //////////////////// defer //////////////////////
 // output: 0
-// defer 参数是在被defer语句包裹的时候进行求值
-func a() {
+// defer参数是在被defer语句包裹的时候进行求值
+// 在defer运行时i被求值为0传入Print函数
+func deferParam() {
 	i := 0
-	// 在defer运行时, i被求值为0, 传入Print函数
 	defer fmt.Println(i)
 	i++
 	return
 }
 
 // output: 2
-// 多个defer语句,遵循FILO后进先出原则
-func b() (i int) {
+// defer读取函数返回值进行操作,甚至修改返回值
+func deferIadd() (i int) {
 	defer func() { i++ }()
 	return 1
 }
 
 // output: hello world
-// defer 可读取函数返回值,进行操作,甚至修改返回值
-func c() {
+// 多个defer遵循FILO后进先出原则
+func deferFILO() {
 	defer fmt.Println("world")
 	defer fmt.Println("hello")
 	return
@@ -70,23 +76,23 @@ defer in e 1
 defer in e 0
 recovered in d 3
 */
-func d() {
+func recoveryPanic() {
 	defer func() {
 		if r := recover(); r != nil {
 			fmt.Println("recovered in d", r)
 		}
 	}()
 	fmt.Println("calling e")
-	e(0)
+	panic(0)
 	fmt.Println("returned normally from e")
 }
 
-func e(i int) {
+func panic(i int) {
 	if i > 2 {
 		fmt.Println("panicing!")
 		panic(fmt.Sprintf("%v", i))
 	}
 	defer fmt.Println("defer in e", i)
 	fmt.Println("printing in e", i)
-	e(i + 1)
+	panic(i + 1)
 }

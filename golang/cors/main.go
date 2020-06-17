@@ -25,17 +25,19 @@ func corsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func run() int {
-	listen := ":8080"
 
+	listen := ":8080"
 	// 设置多路路由
 	mux := http.NewServeMux()
 	mux.HandleFunc("/cors", corsHandler)
 
 	srv := http.Server{Addr: listen, Handler: mux}
+
 	srvc := make(chan struct{})
 
 	go func() {
-		fmt.Printf("listening %v\n", listen)
+
+		fmt.Printf("start listening %v\n", listen)
 		if err := srv.ListenAndServe(); err != http.ErrServerClosed {
 			fmt.Println("listen error ", err)
 			close(srvc)
@@ -46,6 +48,7 @@ func run() int {
 				fmt.Printf("Error on closing the server %v", err)
 			}
 		}()
+
 	}()
 
 	for {

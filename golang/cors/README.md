@@ -1,4 +1,18 @@
 
+<!-- TOC -->
+
+- [CORS (Corss-origin resource sharing) 跨域共享资源](#cors-corss-origin-resource-sharing-跨域共享资源)
+    - [不限制CORS的危害？](#不限制cors的危害)
+    - [限制CORS情况？](#限制cors情况)
+    - [谁限制了跨域？](#谁限制了跨域)
+    - [跨域解决办法](#跨域解决办法)
+- [OPTIONS请求](#options请求)
+    - [options出现的情况](#options出现的情况)
+    - [复杂的跨域请求浏览器才发送`preflight request`](#复杂的跨域请求浏览器才发送preflight-request)
+    - [为什么跨域的复杂请求需要`preflight request`？](#为什么跨域的复杂请求需要preflight-request)
+
+<!-- /TOC -->
+
 ### CORS (Corss-origin resource sharing) 跨域共享资源
 
 W3C标准,是一种机制。
@@ -33,20 +47,45 @@ Web应用程序通过`XMLHttpRequest`对象或`Fetch`能且只能向同域名的
 
     最好的例子是CSRF跨站攻击原理，请求是发送到了后端服务器,无论是否设置允许跨域。
 
+#### 跨域解决办法
 
-#### 解决办法
+- [jsonp协议](https://www.cnblogs.com/dowinning/archive/2012/04/19/json-jsonp-jquery.html)
 
-- JSONP
+  原因：Web页面上调用js文件时则不受是否跨域的影响，拥有"src"这个属性的标签都拥有跨域的能力；
+
+  实现：浏览器客户端在带有src上向不同的站点发送GET请求，同时传送callback将返回值作为返回函数的参数
+
 - WebSocket
-- CORS
 
-    ```go
-    w.Header().Set("Access-Control-Allow-Headers","Accept,Authorization,Content-Type,Origin,X-Token")
-    w.Header().Set("Access-Control-Allow-Methods","GET,DELETE,OPTIONS,PUT")
-    w.Header().Set("Access-Control-Allow-Origin","*")
-    w.Header().Set("Access-Control-Expose-Headers","Date")
-    w.Header().Set("Cache-Control","no-cache,no-store,must-revalidate")
-    ```
+  全双工，允许服务端push数据给客户端。
+- Nginx代理设置
+
+  ```bash
+  location / {
+   if ($request_method = 'OPTIONS') {
+       add_header Access-Control-Allow-Origin $http_origin always;
+       add_header Access-Control-Allow-Credentials true always;
+       add_header Access-Control-Allow-Methods 'GET,POST,PUT,DELETE,OPTIONS' always;
+       add_header Access-Control-Allow-Headers 'Authorization,X-Requested-With,Content-Type,Origin,Accept' always;
+       add_header Access-Control-Max-Age 3600;
+       add_header Content-Length 0;
+       return 200;
+   }
+
+   add_header Access-Control-Allow-Origin $http_origin always;
+   add_header Access-Control-Allow-Credentials true always;
+   add_header Access-Control-Allow-Methods 'GET,POST,PUT,DELETE,OPTIONS' always;
+   add_header Access-Control-Allow-Headers 'Authorization,X-Requested-With,Content-Type,Origin,Accept' always;
+
+   proxy_pass http://localhost:8081/;
+   }   
+  ```
+
+- 服务自身设置header头 
+  
+   ```golang
+   w.Header().Set("Access-Control-Allow-Headers", "Accept, Authorization, Content-Type,Origin,X-Token")
+   ```
 
 ### OPTIONS请求
 [http的options请求](https://cloud.tencent.com/developer/news/397683)

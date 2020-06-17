@@ -1,0 +1,9 @@
+
+
+# go run server.go 后发送请求
+###
+POST http://localhost:8080/search?q=golang
+
+# 必须带有q=xxx，否则返回no query
+###
+POST http://localhost:8080/search?qqq=golang

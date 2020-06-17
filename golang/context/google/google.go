@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"gitee.com/fearless11/golang/code/context/userip"
+	"mycontext/userip"
 )
 
 // Results is an ordered list of search results.
