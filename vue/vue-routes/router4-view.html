@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>命名视图</title>
+    <script src="../scripts/vue.js"></script>
+    <script src="../scripts/vue-route.js"></script>
+</head>
+<body>
+
+<div id="app">
+    <h1>命名视图 router-view</h1>
+    <p>
+        <router-link to="/">Go to /</router-link>
+        <br/>
+        <router-link to="/xxx">Go to /404</router-link>
+    </p>
+
+    <br/>
+    
+    <!-- 路由匹配的组件将渲染在这里：类似占位符 -->
+    <!-- 一个组件对应一个视图，而不是多个组件嵌套到一个视图 -->
+    视图default
+    <router-view></router-view>
+    <hr/>
+    视图one
+    <router-view name="one"></router-view>
+    <hr/>
+    视图two
+    <router-view name="two"></router-view>
+</div>
+
+<script>
+    // 局部组件
+    const Foo = { template: '<div>foo</div>'}
+    const Bar = { template: '<div>bar</div>'}
+    const Hi = { template: '<div>哈哈哈</div>'}
+    const X404 = { template: '<div>我是404，与默认视图绑定</div>'}
+
+    const router = new VueRouter({
+        routes: [
+            {
+                path: '/',
+                components: {
+                    default: Foo,
+                    one: Bar,
+                    two: Hi
+                }
+            },
+           {
+                path: '*',
+                components: { default: X404 }
+            } 
+        ]
+    })
+
+    // 创建和挂载根实例
+    const staticRouteApp = new Vue({
+        router
+    }).$mount('#app')
+</script>
+
+</body>
+</html>
+
+

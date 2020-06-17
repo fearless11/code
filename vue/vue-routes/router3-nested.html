@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>嵌套路由</title>
+    <script src="../scripts/vue.js"></script>
+    <script src="../scripts/vue-route.js"></script>
+</head>
+<body>
+
+<div id="app">
+    <h1>嵌套路由</h1>
+    <p>
+        <router-link to="/user/Mary">/user/Mary</router-link>
+        <br/>
+        <router-link to="/user/Tom/profile">/user/Tom/profile</router-link>
+        <br/>
+        <router-link to="/user/Tom/posts">/user/Tom/posts</router-link>
+    </p>
+    <router-view></router-view>
+</div>
+    
+
+<script>
+    const User = { template: `
+        <div>
+            <h2>User {{ $route.params.id }}</h2>
+            <hr/>
+            <p>我是嵌套路由</p>
+            <router-view></router-view>
+            <hr/>
+        </div>
+    `}
+    const UserProfile = { template: '<div>UserProfile</div>'}
+    const UserPosts = { template: '<div>UserPosts</div>'}
+   
+    const router = new VueRouter({
+        routes : [
+            { path: '/user/:id', component: User,
+              children: [
+                {
+                    path: 'profile',
+                    component: UserProfile
+                },
+                {
+                    path: 'posts',
+                    component: UserPosts
+                }
+              ]
+            }
+        ]
+    })
+
+    // 创建和挂载根实例
+    const staticRouteApp = new Vue({
+        router
+    }).$mount('#app')
+
+</script>
+
+</body>
+</html>

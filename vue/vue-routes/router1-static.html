@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>静态路由&编程式导航</title>
+    <script src="../scripts/vue.js"></script>
+    <script src="../scripts/vue-route.js"></script>
+</head>
+<body>
+
+<div id="staticapp">
+    <h1>静态路由</h1>
+    <h4>组件：router-link && router-view</h4>
+    <p>
+        <!-- router-link组件来导航 -->
+        <router-link to="/foo">Go to Foo</router-link>
+        <br/>
+        <router-link to="/bar">Go to Bar</router-link>
+    </p>
+
+    <br/>
+    <button @click='handlePush()'>编程式导航: 通过事件触发路由或者钩子实现</button>
+    <!-- 路由匹配的组件将渲染在这里：类似占位符 -->
+    <router-view></router-view>
+</div>
+
+<script>
+    // 局部组件
+    const Foo = { template: '<div>foo</div>'}
+    const Bar = { template: '<div>bar</div>'}
+    const Hi = { template: '<div>哈哈哈</div>'}
+
+    // 静态路由
+    const routes = [
+        { path: '/foo', component: Foo},
+        { path: '/bar', component: Bar},
+        { path: '/hi',name:"hi", component: Hi}
+    ]
+    // 路由实例
+    const router = new VueRouter({
+        routes
+    })
+
+    // 创建和挂载根实例
+    const staticRouteApp = new Vue({
+        router,
+        methods: {
+            handlePush: function() {
+                // this.$router.push({path:"foo"})
+                this.$router.push({name:"hi"})
+            }
+        }
+    }).$mount('#staticapp')
+</script>
+
+</body>
+</html>
+
+

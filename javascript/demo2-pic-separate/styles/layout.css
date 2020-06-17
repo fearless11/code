@@ -1,0 +1,60 @@
+
+/* 标签元素统一声明样式 */
+body {
+    font-family: "Helvetica","Arial",serif;
+    color: #333;
+    background-color: #ccc;
+    margin: 1em 10%;
+}
+
+/* 根据元素位置声明样式 */
+h1:first-of-type {
+    background-color: #aaaaaa;
+}
+
+h1 {
+    color: #333;
+    background-color: transparent;
+}
+
+a {
+    color: #c60;
+    background-color: transparent;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+ul {
+    padding: 0;
+}
+
+li {
+    float: left;
+    padding: 1em;
+    list-style: none;
+}
+
+img {
+    display: block;
+    clear: both;
+}
+
+/* class属性的所有元素统一声明样式 */
+.warning {
+    font-size: bold;
+    color: rgb(0, 102, 255);
+}
+
+
+/* id属性单独声明样式 */
+#imagegallery {
+    list-style: none;
+}
+
+#imagegallery li {
+    display: inline;
+}
+
+#imagegallery li a img {
+    border: 0;
+}

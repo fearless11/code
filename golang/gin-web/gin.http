@@ -1,0 +1,24 @@
+
+###
+curl http://localhost:8080/
+
+###
+curl http://localhost:8080/ping
+
+
+###
+POST http://localhost:8080/admin
+Content-Type: application/json
+Authorization: Basic foo bar
+
+{
+    "value" : "hi"
+}
+
+
+###
+curl http://127.0.0.1:8080/JSONP
+
+###
+curl http://127.0.0.1:8080/JSONP?callback=aaa
+

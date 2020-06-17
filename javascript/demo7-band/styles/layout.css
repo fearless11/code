@@ -1,0 +1,102 @@
+
+/* 布局 */
+section, header, article,nav{
+    display: block;
+}
+
+/* 所有元素的内外边距设置为0 */
+* {
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    margin: 1em 10%;
+    background-image: url(../images/background.jpg);
+    background-attachment: fixed;
+    background-position: top left;
+    background-repeat: repeat-x;
+    max-width: 80em;
+}
+
+header {
+    background-image: url(../images/guitarist.jpg);
+    background-repeat: no-repeat;
+    background-position: bottom right;
+    border-width: .1em;
+    border-style: solid;
+    border-bottom-width: 0;
+}
+
+header nav {
+    background-image: url(../images/navbar.jpg);
+    background-position: bottom left;
+    background-repeat: repeat-x;
+    border-width: .1em;
+    border-style: solid;
+    border-bottom-width: 0;
+    border-top-width: 0;
+    padding-left: 10%;
+}
+header nav ul {
+    width: 100%;
+    overflow: hidden;
+    border-left-width: .1em;
+    border-left-style: solid;
+}
+header nav li {
+    display: inline;
+}
+header nav li a {
+    display: block;
+    float: left;
+    padding: .5em 2em;
+    border-right: .1em solid;
+}
+
+article {
+    border-width: .1em;
+    border-style: solid;
+    border-top-width: 0;
+    padding: 2em 10%;
+    line-height: 1.8em;
+}
+article img {
+    border-width: .1em;
+    border-style: solid;
+    outline-width: .1em;
+    outline-style: solid;
+}
+
+td {
+    padding: .5em 3em;
+}
+tr.odd td {
+    color: #233;
+    background-color: #ec8;
+}
+tr.highlight td{
+    color: #223;
+    background-color: #cba;
+}
+
+/* id属性 */
+#about header {
+    background-image: url(../images/background.jpg);
+}
+
+#photos header {
+    background-image: url(../images/logo.jpg);
+}
+
+#live header {
+    background-image: url(../images/navbar.jpg);
+}
+
+#contact header {
+    background-image: url(../images/guitarist.jpg);
+}
+
+#imagegallery li {
+    display: inline;
+}

@@ -1,0 +1,56 @@
+
+p#example {
+    color: red;
+    font: 12px 'Arial',sans-serif;
+}
+
+
+body {
+    font-family: "Helvetica","Arial",sans-serif;
+    background-color: #ffffff;
+    color: #000000;
+}
+
+table {
+    margin: auto;
+    border: 1px solid #699;
+}
+
+caption {
+    margin: auto;
+    padding: .2em;
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+th {
+    font-weight: normal;
+    font-style: italic;
+    text-align: left;
+    border: 1px dotted #699;
+    background-color: #9cc;
+    color: #000000;
+}
+
+th,td {
+    width: 10em;
+    padding: .5em;
+}
+
+/* CSS提供:hover等伪class属性允许根据HTML元素的状态来改变样式
+   效果：鼠标指针停留在一行时改变颜色
+ */
+tr:hover {
+    color: blue;
+}
+
+
+.disclaimer{
+    color: salmon;
+}
+
+.intro {
+    font-weight: blod;
+    font-size: 1.4em;
+    color: springgreen;
+}

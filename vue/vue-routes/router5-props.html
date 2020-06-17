@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>路由组件传参</title>
+    <script src="../scripts/vue.js"></script>
+    <script src="../scripts/vue-route.js"></script>
+</head>
+<body>
+
+<div id="app">
+    <h1>路由组件传参</h1>
+    <p>
+        <router-link to="/user/Mary">/user/Mary</router-link>
+        <br/>
+        <router-link to="/user/profile">/user/profile</router-link>
+        <br/>
+        <router-link to="/user/posts">/user/posts</router-link>
+    </p>
+    <router-view></router-view>
+</div>
+    
+
+<script>
+    const User = { 
+        props: ['id'],
+        template: `<div><h2>在User组件里id号是 {{ id }}</h2></div>`
+    }
+
+    const UserProfile = { template: '<div>UserProfile</div>'}
+    const UserPosts = { template: '<div>UserPosts</div>'}
+   
+    const router = new VueRouter({
+        routes : [
+            { path: '/user/:id', component: User, props: true},
+            
+            // 对于包含命名视图的路由，你必须分别为每个命名视图添加 `props` 选项：
+            // {
+            //   path: '/user/:id',
+            //   components: { default: User, sidebar: Sidebar },
+            //   props: { default: true, sidebar: false }
+            // }
+        ]
+    })
+
+    // 创建和挂载根实例
+    const staticRouteApp = new Vue({
+        router
+    }).$mount('#app')
+
+</script>
+
+</body>
+</html>

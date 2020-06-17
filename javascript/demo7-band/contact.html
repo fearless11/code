@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>联系</title>
+    <script src="scripts/modernizr.min.js"></script>
+    <!-- 导入CSS -->
+    <link rel="stylesheet" media="screen" href="styles/basic.css"/>
+</head>
+<body>
+    <!-- 头部 -->
+    <header>
+        <img src="images/logo.jpg" alt="logo pic" />
+        <!-- 导航栏 -->
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="pohots.html">Photos</a></li>
+                <li><a href="live.html">Live</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <article>
+        <h1>Contact the band</h1>
+        <!-- <form method="POST" action="submit.html"> -->
+        <form method="POST" action="http://127.0.0.1:8080/cors">
+            <fieldset>
+                <p>
+                    <!-- label for属性实现关联到表单一个字段 -->
+                    <!-- label文本被单击时，关联的表单字段会获取焦点。提醒填写在哪里 -->
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name" placeholder="Your name" required="required">
+                </p>
+
+                <p>
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" placeholder="aa@123.com" >
+                </p>
+
+                <p>
+                    <label for="message">Message:</label>
+                    <textarea cols="45" rows="7" id="message" name="message" placeholder="write your message here" required="required"></textarea>
+                </p>
+
+                <input type="submit" value="send"/>
+            </fieldset>
+
+        </form>
+    </article>
+
+    <script src="scripts/global.js"></script>
+</body>
+</html>

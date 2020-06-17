@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Gallery</title>
+
+    <!-- 引入css -->
+    <link rel="stylesheet" href="styles/layout.css" media="screen"/>
+</head>
+<body>
+    <h1>Snapshots</h1>
+    <ul>
+        <li>
+            <a href="images/sea.jpg" title="beautiful sea" onclick="showPic(this); return false;">sea</a>
+        </li>
+        <li>
+            <a href="images/th.jpg" title="mountain" onclick="showPic(this); return false;">mountain</a>
+        </li>
+        <li>
+            <a href="images/house.jpg" title="a house" onclick="showPic(this); return false;">house</a>
+        </li>
+        <li>
+            <!-- 平稳退化 popUp失败时,默认跳转到href链接 -->
+            <a href="http://www.baidu.com" onclick="popUp(this.href); return false;">popUp</a>
+        </li>
+    </ul>
+    <img id="placeholder" src="images/1.jpg" alt="my image gallery">
+    <p id="description" class="warning">Choose an image</p>
+
+    <!-- 引入JavaScript -->
+    <script src="scripts/showPic.js"></script>
+</body>
+</html>

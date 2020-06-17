@@ -1,0 +1,353 @@
+<html>
+
+<head>
+    <title>one vue app</title>
+    <script src="scripts/vue.js"></script>
+    <script src="scripts/axios.min.js"></script>
+</head>
+
+<!-- 
+Vue 官网 
+https://cn.vuejs.org/v2/guide/installation.html
+Vue 渲染函数render 
+https://juejin.im/post/5d5b4379518825637965eb6a#heading-0
+-->
+
+<body>
+    <!-- 插入文本 -->
+    <div id="app-1">
+        <h3>插入文本</h3>
+        <span v-once>v-once初始值 {{ message }}</span>
+        <p>vm.message修改值 {{ message }}</p>
+    </div>
+
+    <!-- 绑定元素属性attribute -->
+    <div id="app-2">
+        <h3>v-bind绑定元素attribute</h3>
+        <!-- v-bind 缩写:  -->
+        <span :title="message">v-bind缩写: 鼠标停留几秒</span>
+        <p></p>
+        <span v-bind:title="message">v-bind 鼠标停留几秒</span>
+    </div>
+
+    <!-- 条件 -->
+    <div id="app-3">
+        <h3>v-if条件</h3>
+        <p v-if="seen">you can see me</p>
+    </div>
+
+    <!-- 循环 -->
+    <div id="app-4">
+        <h3>v-for循环</h3>
+        <ol>
+            <li v-for="todo in todos">
+                {{ todo.text }}
+            </li>
+        </ol>
+    </div>
+
+    <!-- 用户交互 -->
+    <div id="app-5">
+        <h3>v-on事件</h3>
+        <p>{{ message }}</p>
+        <!--  v-on 缩写 @ -->
+        <button @click="reverseMessage">v-on缩写@ 反转消息</button>
+        <p></p>
+        <button v-on:click="reverseMessage">反转消息</button>
+    </div>
+
+    <!-- 表单 -->
+    <div id='app-6'>
+        <h3>v-model双向绑定表单</h3>
+        <p>{{ message }}</p>
+        <input v-model="message">
+    </div>
+
+    <!-- 组件 -->
+    <div id='app-7'>
+        <h3>组件 父到子props</h3>
+        <ol>
+            <todo-item v-for="item in groceryList" v-bind:todo="item" v-bind:key="item.id"></todo-item>
+        </ol>
+    </div>
+
+    <!-- 计算属性 -->
+    <div id='app-8'>
+        <h3>computed计算属性</h3>
+        <p> original message —— {{ message }}</p>
+        <p> computed reversed message 基于响应式缓存 —— {{ reverseMessage }}</p>
+    </div>
+
+    <!-- 方法 -->
+    <div id='app-9'>
+        <h3>methods方法</h3>
+        <p> original message —— {{ message }}</p>
+        <p> methods reversed message 每次执行重新计算 —— {{ reverseMessage() }}</p>
+    </div>
+
+    <!-- 侦听属性 -->
+    <div id='app-10'>
+        <h3>watch侦听属性</h3>
+        <p><input v-model="question"></p>
+        <p>{{ answer }}</p>
+    </div>
+
+    <!-- 复选框 -->
+    <div id='app-11'>
+        <h3>复选框v-model</h3>
+        <input type="checkbox" id='jack' value='jack' v-model='checkedNames'>
+        <label for='jack'>jack</label>
+        <input type="checkbox" id='john' value='john' v-model='checkedNames'>
+        <label for='john'>john</label>
+        <input type="checkbox" id='mike' value='mike' v-model='checkedNames'>
+        <label for='mike'>mike</label>
+        <br>
+        <span>checked names:{{ checkedNames }}</span>
+    </div>
+
+    <!-- 组件  -->
+    <div id='app-12'>
+        <h3>组件 子到父 $emit $event</h3>
+        <div :style="{ fontSize: postFontSize + 'em' }">
+            <blog-post v-for="post in posts" v-bind:key="post.id" v-bind:title="post.title"
+                v-on:enlarge-text="postFontSize += $event" @reduce-text="onReduceText"></blog-post>
+        </div>
+    </div>
+
+    <!-- 插槽slot -->
+    <div id='app-13'>
+        <h3>组件 父到子 插槽slot 分发内容</h3>
+        <alert-box>test slot content</alert-box>
+    </div>
+
+    <!--  render 渲染函数DOM -->
+    <div id='app-14'>
+        <h3>render渲染DOM</h3>
+        <render-dom :level='level'>我是标题</render-dom>
+    </div>
+
+
+    <!-- JavaScript -->
+    <script>
+        var app = new Vue({
+            el: '#app-1',
+            data: {
+                message: 'hello vue!'
+            },
+            // 生命周期
+            created: function () {
+                console.log('message is :' + this.message)
+            }
+        })
+        app.message = "what"
+
+        var app2 = new Vue({
+            el: '#app-2',
+            data: {
+                message: '页面加载于' + new Date().toLocaleString()
+            }
+        })
+
+        var app3 = new Vue({
+            el: '#app-3',
+            data: {
+                seen: true
+            }
+        })
+
+        var app4 = new Vue({
+            el: '#app-4',
+            data: {
+                todos: [
+                    { text: '学习Javascript' },
+                    { text: '学习Vue' }
+                ]
+            }
+        })
+
+        var app5 = new Vue({
+            el: '#app-5',
+            data: {
+                message: "Hello world!"
+            },
+            methods: {
+                reverseMessage: function () {
+                    // this指它调用的vue实例
+                    this.message = this.message.split('').reverse().join('')
+                }
+            }
+        })
+
+        var app6 = new Vue({
+            el: '#app-6',
+            data: {
+                message: "hello world"
+            }
+        })
+
+        // 组件 注册后在另外组件模板可以直接使用
+        Vue.component('todo-item', {
+            props: ['todo'],
+            template: '<li>{{ todo.text }}</li>'
+        })
+        var app7 = new Vue({
+            el: '#app-7',
+            data: {
+                groceryList: [
+                    { id: 0, text: '水果' },
+                    { id: 1, text: '牛奶' },
+                    { id: 2, text: '蔬菜' },
+                ]
+            }
+        })
+
+        // 计算属性 computed基于响应式依赖进行缓存
+        var app8 = new Vue({
+            el: '#app-8',
+            data: {
+                message: 'hello'
+            },
+            computed: {
+                reverseMessage: function () {
+                    return this.message.split('').reverse().join('')
+                }
+            }
+        })
+
+        // 方法 每次都会执行函数
+        var app9 = new Vue({
+            el: '#app-9',
+            data: {
+                message: 'hello'
+            },
+            methods: {
+                reverseMessage: function () {
+                    return this.message.split('').reverse().join('')
+                }
+            }
+        })
+
+        // 侦听属性  观察响应数据变动,适用于执行异步或开销较大的操作
+        var app10 = new Vue({
+            el: '#app-10',
+            data: {
+                question: '',
+                answer: 'I cannot give you an answer until you ask a question'
+            },
+            watch: {
+                question: function () {
+                    this.answer = 'waiting for you to stop typing ...'
+                    this.getAnswer()
+                }
+            },
+            methods: {
+                getAnswer: function () {
+                    if (this.question.indexOf('?') === -1) {
+                        this.answer = '输入需要以问号?结尾'
+                        return
+                    }
+                    this.answer = 'thinking ...'
+                    var vm = this
+                    axios.get('http://127.0.0.1:8080/cors').then(
+                        function (response) {
+                            console.log("axios get " + response.data)
+                            vm.answer = response.data
+                        }).catch(function (error) {
+                            vm.answer = "ERROR"
+                        })
+                }
+            }
+        })
+
+        // 复选框
+        var app11 = new Vue({
+            el: '#app-11',
+            data: {
+                checkedNames: []
+            }
+        })
+
+        // 组件 
+        //  props 接收父组件bind的值
+        //  emit 返回第二个参数, 父组件用$event接收, 或者作为函数的第一个参数
+        Vue.component('blog-post', {
+            props: ['title'],
+            template: `
+            <div>
+             <h6>blog-post: {{ title }}</h6>
+             <button v-on:click="$emit('enlarge-text',0.1)">enlarge text</button>
+             <button v-on:click="$emit('reduce-text',0.1)">reduce text</button>
+            </div>
+            `
+        })
+        var app12 = new Vue({
+            el: '#app-12',
+            data: {
+                posts: [
+                    { id: 1, title: 'My journey with Vue' },
+                    { id: 2, title: 'Blogging with Vue' },
+                    { id: 3, title: 'Why Vue is so fun' }
+                ],
+                postFontSize: 1
+            },
+            methods: {
+                // $emit的第二参数值作为第一个参数
+                onReduceText: function (reduceSize) {
+                    this.postFontSize -= reduceSize
+                }
+            }
+        })
+
+
+        // 插槽 slot 组件分发内容
+        Vue.component('alert-box', {
+            template: `
+              <div>
+                <strong>Error!</strong>
+                <slot></slot>
+              </div>
+            `
+        })
+
+        var app13 = new Vue({
+            el: '#app-13',
+            data: {}
+        })
+
+
+        // 渲染函数render
+        // 在vue中使用HTML模板组建页面, render函数使得可以用js语言构建DOM。
+        // 因为vue是虚拟DOM，所以在拿到template模板时也要转译成VNode的函数，而用render函数构建DOM，vue就免去了转译的过程。
+        // JSX就是Javascript和XML结合的一种格式。
+        // React发明了JSX，利用HTML语法来创建虚拟DOM。当遇到<，JSX就当HTML解析，遇到{就当JavaScript解析。
+        //   render(h) {
+        //     return (
+        //       <Child1 level={1}>
+        //         <span>Hello</span> world!
+        //     </Child1>
+        //     )
+        //   }
+        Vue.component('render-dom', {
+            props: {
+                level: {
+                    require: true,
+                    type: Number,
+                }
+            },
+            // render函数三个参数： HTML标签名、控制样式等、子级虚拟VNodes
+            render: function (h) {
+                return h('h' + this.level, this.$slots.default)
+            }
+        })
+        var app14 = new Vue({
+            el: '#app-14',
+            data: {
+                level: 3
+            }
+        })
+
+
+    </script>
+</body>
+
+</html>

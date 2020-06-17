@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <link rel="stylesheet" media="screen" href="styles/styles.css"></link>
+
+    <script>
+        // style是个object
+        // window.onload = function() {
+        //     var para = document.getElementById("example");
+        //     alert(typeof para.nodeName)
+        //     alert(typeof para.style)
+        //     alert("this color is "+ para.style.color)
+        //     // CSS中间带减号变DOM驼峰
+        //     alert("this font-family is "+ para.style.fontFamily)
+        // }
+
+        // DOM设置样式
+        window.onload = function() {
+            var para = document.getElementById("example");
+            para.style.color = "black";
+            para.style.font = "2em 'Times',serif"
+        }
+    </script>
+</head>
+<body>
+    <!-- <p id="example" style="color:grey; font-family:'Arial',sans-serif ">
+        An example of paragraph</p> -->
+        <p id="example">An example of paragraph</p>
+</body>
+</html>
