@@ -7,6 +7,8 @@ import (
 
 // https://godoc.org/time
 
+// 时间、时区、计算时间差值
+
 /*
 时间点：Time
 时间段：Duration

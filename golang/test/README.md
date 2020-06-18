@@ -47,7 +47,7 @@ func TestAbs(t *testing.T) {
 usage: go test
 output: 
 PASS
-ok      gitee.com/fearless11/golang/package/test        0.348s
+ok      mytest/test        0.348s
 ```
 
 
@@ -86,7 +86,7 @@ want:
 hello
 FAIL
 exit status 1
-FAIL    gitee.com/fearless11/golang/package/test        0.367s
+FAIL    mytest/test        0.367s
 ```
 
 
@@ -106,10 +106,10 @@ usage: go test -run Benchmark -bench=Benchmark
 output:
 goos: windows
 goarch: amd64
-pkg: gitee.com/fearless11/golang/package/test
+pkg: mytest/test
 // 函数-并发数                            操作次数                每次操作的时间
 BenchmarkHello-12                       30000000                56.8 ns/op
 PASS
-ok      gitee.com/fearless11/golang/package/test        5.915s // 总耗时
+ok      mytest/test        5.915s // 总耗时
 ```
 

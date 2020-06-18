@@ -11,6 +11,8 @@ import (
 	"time"
 )
 
+// 存取值、解析
+
 // Example 1: A single string flag called "species" with default value "gopher".
 var species = flag.String("species", "gopher", "the species we are studying")
 

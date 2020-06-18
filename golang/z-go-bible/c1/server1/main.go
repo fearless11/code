@@ -33,7 +33,7 @@ func main() {
 	}
 	fmt.Printf("%T\n%T\n", a, aa)
 
-	str := "江欢vera"
+	str := "vera"
 	for i, v := range str {
 		n := strconv.FormatInt(int64(v), 2)
 		fmt.Println(i, n)

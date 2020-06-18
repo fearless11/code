@@ -27,9 +27,8 @@ func TestSendJSON(t *testing.T) {
 		}
 		t.Log("\tshould be able to create a request.", checkMark)
 
+		// 模拟发送http请求
 		rw := httptest.NewRecorder()
-		// DefaultServeMux服务默认的多路由选择器的ServeHTTP方法模拟客户端对/sendJSON的请求
-		// 将响应结果对应到recorde中，实现对内容进行解码
 		http.DefaultServeMux.ServeHTTP(rw, req)
 
 		if rw.Code != 200 {

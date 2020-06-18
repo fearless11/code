@@ -32,12 +32,13 @@ type ArithResponse struct {
 type Arith struct {
 }
 
-func (this *Arith) Multiply(req ArithRequest, res *ArithResponse) error {
+// Multiply 可以导出远程调用的方法
+func (a *Arith) Multiply(req ArithRequest, res *ArithResponse) error {
 	res.Pro = req.A * req.B
 	return nil
 }
 
-func (this *Arith) Divide(req ArithRequest, res *ArithResponse) error {
+func (a *Arith) Divide(req ArithRequest, res *ArithResponse) error {
 	if req.B == 0 {
 		return errors.New("除以零")
 	}

@@ -1,25 +1,23 @@
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+<!-- TOC -->
 
-- [什么是并发？](#%E4%BB%80%E4%B9%88%E6%98%AF%E5%B9%B6%E5%8F%91)
-  - [并发&并行](#%E5%B9%B6%E5%8F%91%E5%B9%B6%E8%A1%8C)
-  - [进程&线程&goroutine](#%E8%BF%9B%E7%A8%8B%E7%BA%BF%E7%A8%8Bgoroutine)
-  - [进程&线程](#%E8%BF%9B%E7%A8%8B%E7%BA%BF%E7%A8%8B)
-  - [线程&goroutine](#%E7%BA%BF%E7%A8%8Bgoroutine)
-  - [进程间通信方式](#%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1%E6%96%B9%E5%BC%8F)
-  - [goroutine配置](#goroutine%E9%85%8D%E7%BD%AE)
-  - [goroutine的GMP模型](#goroutine%E7%9A%84gmp%E6%A8%A1%E5%9E%8B)
-  - [线程调度模型](#%E7%BA%BF%E7%A8%8B%E8%B0%83%E5%BA%A6%E6%A8%A1%E5%9E%8B)
-- [并发要解决的问题？](#%E5%B9%B6%E5%8F%91%E8%A6%81%E8%A7%A3%E5%86%B3%E7%9A%84%E9%97%AE%E9%A2%98)
-  - [竞争状态](#%E7%AB%9E%E4%BA%89%E7%8A%B6%E6%80%81)
-  - [解决竞争办法](#%E8%A7%A3%E5%86%B3%E7%AB%9E%E4%BA%89%E5%8A%9E%E6%B3%95)
-  - [并发模式](#%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%BC%8F)
-  - [通道](#%E9%80%9A%E9%81%93)
-    - [无缓冲通道](#%E6%97%A0%E7%BC%93%E5%86%B2%E9%80%9A%E9%81%93)
-    - [有缓冲通道](#%E6%9C%89%E7%BC%93%E5%86%B2%E9%80%9A%E9%81%93)
+- [什么是并发？](#什么是并发)
+    - [并发&并行](#并发并行)
+    - [进程&线程&goroutine](#进程线程goroutine)
+    - [进程&线程](#进程线程)
+    - [线程&goroutine](#线程goroutine)
+    - [进程间通信方式](#进程间通信方式)
+    - [goroutine配置](#goroutine配置)
+    - [goroutine的GMP模型](#goroutine的gmp模型)
+    - [线程调度模型](#线程调度模型)
+- [并发要解决的问题？](#并发要解决的问题)
+    - [竞争状态](#竞争状态)
+    - [解决竞争办法](#解决竞争办法)
+    - [并发模式](#并发模式)
+    - [通道](#通道)
+        - [无缓冲通道](#无缓冲通道)
+        - [有缓冲通道](#有缓冲通道)
 
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+<!-- /TOC -->
 
 
 ## 什么是并发？

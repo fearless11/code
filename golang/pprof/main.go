@@ -12,6 +12,8 @@ func main() {
 	pprofNetHTTP()
 }
 
+// web形式：只用导入_net/http/pprof后http.ListenAndServe(":6060", nil)即可
+
 // http://localhost:6060/debug/pprof/
 // 网页查看观察应用程序的堆栈、线程、内存等情况
 

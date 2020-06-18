@@ -13,6 +13,8 @@
 
 [text/template](https://godoc.org/text/template)
 
+理解： 模板文件怎么写，加载包渲染
+
 关键点
 - text and spaces : 静态和动态数据
 - actions

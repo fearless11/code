@@ -9,6 +9,7 @@ import (
 
 type hi struct{}
 
+// 实现了ServeHTTP行为即实现了handler接口
 func (h hi) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "hi world")
 }

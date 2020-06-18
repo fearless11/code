@@ -7,6 +7,8 @@ import (
 	// "github.com/sirupsen/logrus"
 )
 
+// 时间、文件、格式化
+
 // https://godoc.org/github.com/sirupsen/logrus
 
 func init() {

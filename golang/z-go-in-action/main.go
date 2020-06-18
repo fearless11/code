@@ -4,12 +4,13 @@ import (
 	"log"
 	"os"
 
-	_ "gitee.com/feareless11/book/code/go-practice/matchers"
-	"gitee.com/feareless11/book/code/go-practice/search"
+	_ "goinaction/matchers"
+	"goinaction/search"
 )
 
 // init在main之前调用
 func init() {
+	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
 	log.SetOutput(os.Stdout)
 }
 

@@ -27,7 +27,10 @@ func main() {
 	db := database{"shoes": 50, "socks": 5}
 	mux := http.NewServeMux()
 	// http.HandlerFunc(db.list)
-	// 是类型转换，不是函数调用
+	// LSP里氏转换
+	//   可替换型（LSP里氏替换）：一个类型可以自由地被另一个满足相同接口的类型替换。
+	//   满足同一接口的不同类型是可替换的。
+	//  http.HandlerFunc不是函数调用，而是LSP
 	mux.Handle("/list", http.HandlerFunc(db.list))
 	mux.HandleFunc("/price", db.price)
 	log.Fatal(http.ListenAndServe("localhost:8000", mux))

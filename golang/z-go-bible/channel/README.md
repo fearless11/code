@@ -1,3 +1,11 @@
+<!-- TOC -->
+
+- [channel特点](#channel特点)
+- [channal操作](#channal操作)
+- [内存泄露](#内存泄露)
+
+<!-- /TOC -->
+
 ### channel特点
 - 用于通信
 - 有特殊类型

@@ -1,12 +1,12 @@
 [
     {
-        "site":"npr",
+        "site": "npr",
         "link": "http://www.npr.org/rss/rss.php?id=1001",
-        "type":"rss"
+        "type": "rss"
     },
     {
-        "site":"nbcnews",
+        "site": "nbcnews",
         "link": "http://feeds.nbcnews,com/feeds/topstories",
-        "type":"rss"
+        "type": "rss"
     }
 ]

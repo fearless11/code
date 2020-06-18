@@ -24,7 +24,7 @@ BenchmarkSprintf-12     20000000                 74.1 ns/op
 BenchmarkFormate-12     1000000000               2.36 ns/op
 BenchmarkItoa-12        500000000                3.51 ns/op
 PASS
-ok      gitee.com/fearless11/golang/code/test/benchmark 6.611s （总耗时6s）
+ok      mytest/benchmark 6.611s （总耗时6s）
 */
 
 // 命令： go test -v -run="none" -bench="." -benchmem
@@ -33,7 +33,7 @@ BenchmarkSprintf-12     20000000                78.9 ns/op            16 B/op   
 BenchmarkFormate-12     1000000000               2.34 ns/op            0 B/op          0 allocs/op
 BenchmarkItoa-12        500000000                3.51 ns/op            0 B/op          0 allocs/op
 PASS
-ok      gitee.com/fearless11/golang/code/test/benchmark 6.682s
+ok      mytest/benchmark 6.682s
 */
 // BenchmarkSprintf-12     20000000                 74.1
 

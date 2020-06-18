@@ -28,9 +28,9 @@ func refectTypeAndValue() {
 	fru := &fruit{Name: "apple"}
 	//interface -- reflect
 	ff := reflect.ValueOf(fru)
-	fmt.Printf("obj: %+v\ntype: %v\nvalue: %v\n", ff, ff.Type(), ff.Elem())
+	fmt.Printf("obj: %+v\ttype: %v\tvalue: %v\n", ff, ff.Type(), ff.Elem())
 
-	// reflect -- interface
+	// 接口强制转换
 	fu := ff.Interface().(*fruit)
 	fmt.Println("name:", fu.Name)
 }

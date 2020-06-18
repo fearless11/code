@@ -6,8 +6,9 @@ import (
 	"strings"
 )
 
-// https://godoc.org/encoding/json
+// 序列化、反序列化、格式化输出
 
+// https://godoc.org/encoding/json
 // JSON: 轻量级的文本交换格式. 类似 XML、ini、yaml、toml
 // 规范: key/value
 //  key: string

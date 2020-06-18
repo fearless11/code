@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"regexp"
 
-	"gitee.com/feareless11/book/code/go-practice/search"
+	"goinaction/search"
 )
 
 type (

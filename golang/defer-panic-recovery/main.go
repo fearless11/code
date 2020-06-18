@@ -1,19 +1,25 @@
 package main
 
-import "fmt"
-
-func main() {
-	// deferParam()
-	// fmt.Println(deferIadd())
-	// deferFILO()
-	recoveryPanic()
-}
+import (
+	"fmt"
+	"time"
+)
 
 /*
 defer: 延迟处理
 panic: 中断程序
 recovery: 截取panic恢复程序
+
+同一个goroutine中可用recovery恢复panic
 */
+
+func main() {
+	// deferParam()
+	// fmt.Println(deferIadd())
+	// deferFILO()
+	// recoveryPanic()
+	panicBygoroutine()
+}
 
 //////////////////// defer //////////////////////
 // output: 0
@@ -66,33 +72,59 @@ recover 函数返回调用 panic 函数时的参数。然后让程序恢复正�
 */
 
 /* output:
-calling e
-printing in e 0
-printing in e 1
-printing in e 2
-panicing!
-defer in e 2
-defer in e 1
-defer in e 0
-recovered in d 3
+calling autoPanic
+printing in autoPanic 0
+printing in autoPanic 1
+printing in autoPanic 2
+auto panicing!
+defer in autoPanic 2
+defer in autoPanic 1
+defer in autoPanic 0
+recovered in recoveryPanic 3
 */
+// defer的后进先出
+// 在同一个goroutine的defer中用recovery捕获panic
 func recoveryPanic() {
 	defer func() {
 		if r := recover(); r != nil {
-			fmt.Println("recovered in d", r)
+			fmt.Println("recovered in recoveryPanic", r)
 		}
 	}()
-	fmt.Println("calling e")
-	panic(0)
-	fmt.Println("returned normally from e")
+	fmt.Println("calling autoPanic")
+	autoPanic(0)
+	fmt.Println("returned normally from autoPanic")
+	select {}
 }
 
-func panic(i int) {
+func autoPanic(i int) {
 	if i > 2 {
-		fmt.Println("panicing!")
+		fmt.Println("auto panicing!")
 		panic(fmt.Sprintf("%v", i))
 	}
-	defer fmt.Println("defer in e", i)
-	fmt.Println("printing in e", i)
-	panic(i + 1)
+	defer fmt.Println("defer in autoPanic", i)
+	fmt.Println("printing in autoPanic", i)
+	autoPanic(i + 1)
+}
+
+/*
+output:
+defer func here
+defer goroutine
+panic: auto panic
+*/
+// panic只管当前goroutine中的defer会被调用到，不保证其他defer调用
+func panicBygoroutine() {
+	defer fmt.Println("defer main") // 不会执行
+	go func() {
+		defer fmt.Println("defer goroutine")
+		func() {
+			defer func() {
+				fmt.Println("defer func here")
+			}()
+			panic("auto panic")
+		}()
+	}()
+
+	time.Sleep(1 * time.Second)
+	fmt.Println("main ending")
 }
