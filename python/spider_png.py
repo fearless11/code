@@ -20,13 +20,26 @@ interval = "3h"
 
 # 监控面板
 urls = {
-    "proxy1" : "http://%s/m/dashboard/db/proxy?orgId=1&panelId=1&fullscreen&from=now-%s&to=now" % (interurl,interval),
-    "proxy3" : "http://%s/m/dashboard/db/proxy?orgId=1&panelId=3&fullscreen&from=now-%s&to=now" % (interurl,interval),
-    "proxy4" : "http://%s/m/dashboard/db/proxy?orgId=1&panelId=4&fullscreen&from=now-%s&to=now" % (interurl,interval),
-    "proxy8" : "http://%s/m/dashboard/db/proxy?orgId=1&panelId=8&fullscreen&from=now-%s&to=now" % (interurl,interval),
-    "proxy10" : "http://%s/m/dashboard/db/proxy?orgId=1&panelId=10&fullscreen&from=now-%s&to=now" % (interurl,interval), 
-    "biz7" : "http://%s/m/dashboard/db/biz?orgId=1&panelId=7&fullscreen&from=now-%s&to=now" % (interurl,interval), 
+    "proxy1":
+    "http://%s/m/dashboard/db/proxy?orgId=1&panelId=1&fullscreen&from=now-%s&to=now"
+    % (interurl, interval),
+    "proxy3":
+    "http://%s/m/dashboard/db/proxy?orgId=1&panelId=3&fullscreen&from=now-%s&to=now"
+    % (interurl, interval),
+    "proxy4":
+    "http://%s/m/dashboard/db/proxy?orgId=1&panelId=4&fullscreen&from=now-%s&to=now"
+    % (interurl, interval),
+    "proxy8":
+    "http://%s/m/dashboard/db/proxy?orgId=1&panelId=8&fullscreen&from=now-%s&to=now"
+    % (interurl, interval),
+    "proxy10":
+    "http://%s/m/dashboard/db/proxy?orgId=1&panelId=10&fullscreen&from=now-%s&to=now"
+    % (interurl, interval),
+    "biz7":
+    "http://%s/m/dashboard/db/biz?orgId=1&panelId=7&fullscreen&from=now-%s&to=now"
+    % (interurl, interval),
 }
+
 
 def send_pic(pic_file):
     if not os.path.exists(pic_file):
@@ -50,13 +63,13 @@ def send_pic(pic_file):
 def get_urls():
     allUrls = []
     for k in urls:
-        url = urls[k] + "@%s%s-%s" % (pic_path,k,pic_name)
+        url = urls[k] + "@%s%s-%s" % (pic_path, k, pic_name)
         allUrls.append(url)
     return allUrls
 
-	
+
 class spier(threading.Thread):
-    def __init__(self,url,pic_name):
+    def __init__(self, url, pic_name):
         threading.Thread.__init__(self)
         self.url = url
         self.pic_name = pic_name
@@ -66,25 +79,25 @@ class spier(threading.Thread):
         # wd = webdriver.PhantomJS("e:\\python\\mspier\\bin\\phantomjs.exe")
         wd = webdriver.PhantomJS("/usr/local/bin/phantomjs")
 
-        wd.set_window_size(1900, 700)    
+        wd.set_window_size(1900, 700)
         wd.get(self.url)
         s = time()
         while True:
-            if  time() -s > 10:
+            if time() - s > 10:
                 break
             sleep(1)
         e = time()
-        print("wait: %s" % (e-s),self.pic_name)
+        print("wait: %s" % (e - s), self.pic_name)
         wd.get_screenshot_as_file(self.pic_name)
         send_pic(self.pic_name)
         wd.quit()
 
-		
-if __name__ == "__main__":   
+
+if __name__ == "__main__":
     all_urls = get_urls()
     # 线程抓取监控图
     for singe_url in all_urls:
         url = singe_url.split('@')[0]
-        pic_name =  singe_url.split('@')[1]
-        t = spier(url,pic_name)
+        pic_name = singe_url.split('@')[1]
+        t = spier(url, pic_name)
         t.start()
