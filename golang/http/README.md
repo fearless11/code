@@ -7,6 +7,8 @@
 
 <!-- /TOC -->
 
+关键点： http的方法，设置协议，设置条件，优雅关闭，设置路由，不同的不同处理方式，cookie，hijack， HTTP Trailers: 在http响应之后添加键值对而不是在之前  Hijack: 劫持。
+
 ## HTTP协议
 
 - 传输层协议：底层TCP
