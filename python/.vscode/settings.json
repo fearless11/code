@@ -1,6 +1,6 @@
 {
-    "python.pythonPath": "D:\\Program Files (x86)\\python",
-    "python.pipenvPath": "D:\\Program Files (x86)\\python\\Scripts",
+    "python.pythonPath": "/usr/local/bin/python3",
+    "python.pipenvPath": "/usr/local/bin/pip3",
     "python.linting.flake8Enabled": true,
     "python.formatting.provider": "yapf",
     "python.linting.flake8Args": [
