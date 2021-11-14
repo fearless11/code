@@ -11,7 +11,7 @@ type Result struct {
 	Content string
 }
 
-// Matcher 定义实际的搜索类型的行为
+// Matcher 定义实际的搜索类型的行为
 type Matcher interface {
 	Search(feed *Feed, searchTerm string) ([]*Result, error)
 }

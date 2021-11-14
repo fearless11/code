@@ -1,3 +1,4 @@
+// Packeage matchers提供了rss匹配器功能
 package matchers
 
 import (
@@ -77,6 +78,7 @@ func (m rssMatcher) retrieve(feed *search.Feed) (*rssDocument, error) {
 	return &document, err
 }
 
+// Search 实现rss的搜索功能
 func (m rssMatcher) Search(feed *search.Feed, searchTerm string) ([]*search.Result, error) {
 	var results []*search.Result
 

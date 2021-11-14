@@ -15,6 +15,5 @@ func init() {
 }
 
 func main() {
-	// 搜索president总统关键字的rss
 	search.Run("president")
 }

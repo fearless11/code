@@ -5,7 +5,6 @@ import (
 	"sync"
 )
 
-// make初始化map
 var matchers = make(map[string]Matcher)
 
 func Run(searchTerm string) {
@@ -26,8 +25,10 @@ func Run(searchTerm string) {
 			matcher = matchers["default"]
 		}
 
+		// 匿名函数
+		// 闭包
+		// 传参
 		go func(matcher Matcher, feed *Feed) {
-			// 根据传递的matcher执行对应的搜索
 			Match(matcher, feed, searchTerm, results)
 			waitGroup.Done()
 		}(matcher, feed)
@@ -41,7 +42,7 @@ func Run(searchTerm string) {
 	Display(results)
 }
 
-// Register 程序运行时就完成对应matcher注册
+// Register ...
 func Register(feedType string, matcher Matcher) {
 	if _, exists := matchers[feedType]; exists {
 		log.Fatalln(feedType, "Matcher already registered")

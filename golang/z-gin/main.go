@@ -17,7 +17,7 @@ import (
 
 func main() {
 	// quickStart()
-	// basicAuth()
+	basicAuth()
 	// httpParameters()
 	// httpQuerystringParameters()
 	// httpEncoded()
@@ -36,7 +36,7 @@ func main() {
 	// ginStatic()
 	// ginDataForm()
 	// ginHTMLRendering()
-	testCNext()
+	// testCNext()
 }
 
 func quickStart() {
