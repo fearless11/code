@@ -5,21 +5,22 @@
 
 version=1.18.2
 package=go${version}.linux-amd64.tar.gz
+# package=go${version}.darwin-amd64.tar.gz
 url=https://gomirrors.org/dl/go/${package}
 soft=/tmp/${package}
 
 install() {
     wget $url -O ${soft}
-    mkdir -p /usr/local/go${version} >/dev/null
+    mkdir -p /usr/local/go/go${version} >/dev/null
     tar xf ${soft} -C /usr/local/go${version}
-    unlink /usr/local/go
-    ln -s /usr/local/go${version}/go /usr/local/go
-    mkdir -p /opt/go/src
+    unlink /usr/local/go/goroot
+    ln -s /usr/local/go/go${version}/go /usr/local/go/goroot
+    mkdir -p /usr/local/go/gopath
     cp /etc/profile /home
 
     cat <<EOF >>/etc/profile
-export GOROOT=/usr/local/go
-export GOPATH=/opt/go
+export GOROOT=/usr/local/go/goroot
+export GOPATH=/usr/local/go/gopath
 export GOPROXY=https://proxy.golang.com.cn,direct
 export GOPRIVATE="*.code.oa.com,*.woa.com"
 export GO111MODULE=on
@@ -32,10 +33,10 @@ EOF
 
 update() {
     wget $url -O ${soft}
-    mkdir -p /usr/local/go${version} >/dev/null
-    tar xf ${soft} -C /usr/local/go${version}
-    unlink /usr/local/go
-    ln -s /usr/local/go${version}/go /usr/local/go
+    mkdir -p /usr/local/go/go${version} >/dev/null
+    tar xf ${soft} -C /usr/local/go/go${version}
+    unlink /usr/local/go/goroot
+    ln -s /usr/local/go/go${version}/go /usr/local/go/goroot
 }
 
 case $1 in
