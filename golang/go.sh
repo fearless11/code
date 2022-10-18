@@ -39,6 +39,12 @@ update() {
     ln -s /usr/local/go/go${version}/go /usr/local/go/goroot
 }
 
+set_goenv(){
+    # set goproxy 
+    go env -w GOPROXY=https://goproxy.io,direct
+    go env -w GO111MODULE="on"
+}
+
 case $1 in
 install)
     install

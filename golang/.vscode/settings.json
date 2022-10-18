@@ -1,6 +1,5 @@
 {
-    "go.gopath": "/data/go",
-    "go.goroot": "/usr/local/go",
+    "go.goroot": "D:\\goroot",
     "go.buildOnSave": "package",
     "go.lintOnSave": "package",
     "go.formatTool": "goimports",
