@@ -1,9 +1,17 @@
 {
-    "go.goroot": "D:\\goroot",
-    "go.buildOnSave": "package",
-    "go.lintOnSave": "package",
+    // "go.goroot": "D:\\goroot",
+    "go.goroot": "/usr/local/go/goroot",
+    "go.gopath": "/usr/local/go/gopath",
     "go.formatTool": "goimports",
+    "go.buildOnSave": "package",
     "go.useCodeSnippetsOnFunctionSuggest": true,
+    // check code by golint 
+    "go.lintOnSave": "package",
+    "go.lintTool": "golint",
+    // check code by gopls
     "go.useLanguageServer": false,
-    "go.useGoProxyToCheckForToolUpdates": true
+    "gopls": {
+        "ui.completion.usePlaceholders": true
+    },
+    "files.eol": "\n"
 }
