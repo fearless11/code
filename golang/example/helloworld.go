@@ -1,0 +1,278 @@
+package main
+
+import (
+	"fmt"
+	"math"
+	"time"
+)
+
+// https://gobyexample.com/
+
+func main() {
+	functions()
+	// ranges()
+	// maps()
+	// slices()
+	// arrays()
+	// switchCase()
+	// ifelse()
+	// onlyfor()
+	// constants()
+	// variables()
+	// values()
+	// helloworld()
+}
+
+func functions() {
+	fmt.Println("here")
+}
+
+func ranges() {
+	nums := []int{2, 3, 4}
+	sum := 0
+	for _, num := range nums {
+		sum += num
+	}
+	fmt.Println("sum: ", sum)
+
+	for i, num := range nums {
+		if num == 3 {
+			fmt.Println("index: ", i)
+		}
+	}
+
+	kvs := map[string]string{"a": "apple", "b": "banana"}
+	for k, v := range kvs {
+		fmt.Printf("%s -> %s\n", k, v)
+	}
+
+	for k := range kvs {
+		fmt.Println("key: ", k)
+	}
+
+	for i, c := range "go" {
+		fmt.Printf("key:%v type:%T,\t value:%v string:%v type:%T\n", i, i, c, string(c), c)
+	}
+}
+
+func maps() {
+	var a map[string]int
+	if a == nil {
+		fmt.Println("a is nul ", a)
+	}
+	fmt.Printf("emp: %v, type: %T\n", a, a)
+
+	m := make(map[string]int)
+	m["k1"] = 7
+	m["k2"] = 13
+	m["k3"] = 12
+	fmt.Println("map: ", m)
+	v1 := m["k1"]
+	fmt.Println("v1: ", v1)
+	fmt.Println("len: ", len(m))
+
+	delete(m, "k2")
+	fmt.Println("map: ", m)
+
+	v, ok := m["k3"]
+	if ok {
+		fmt.Printf("exist v: %v, is true: %v\n", v, ok)
+	} else {
+		fmt.Printf("not exist v: %v, is false: %v\n", v, ok)
+	}
+
+	n := map[string]int{"foo": 1, "bar": 2}
+	fmt.Println("map: ", n)
+}
+
+func slices() {
+	var a []string
+	if a == nil {
+		fmt.Println("a is nul ", a)
+	}
+	fmt.Printf("emp: %v, type: %T, len: %v\n", a, a, len(a))
+	s := make([]string, 3)
+	fmt.Printf("emp: %v, type:%T,len: %v\n", s, s, len(s))
+	s[0] = "a"
+	s[1] = "b"
+	s[2] = "c"
+	fmt.Println("set: ", s)
+	fmt.Println("get: ", s[2])
+	fmt.Println("len: ", len(s))
+	s = append(s, "d")
+	s = append(s, "e", "f")
+	fmt.Println("apd: ", s)
+	c := make([]string, len(s))
+	copy(c, s)
+	fmt.Println("cpy: ", c)
+	l := s[2:5]
+	fmt.Println("sl1: ", l)
+	l = s[:5]
+	fmt.Println("sl2: ", l)
+	l = s[2:]
+	fmt.Println("sl3: ", l)
+
+	t := []string{"g", "h", "i"}
+	fmt.Println("dcl: ", t)
+
+	twoD := make([][]int, 3)
+	for i := 0; i < 3; i++ {
+		innerLen := i + 1
+		twoD[i] = make([]int, innerLen)
+		for j := 0; j < innerLen; j++ {
+			twoD[i][j] = i + j
+		}
+	}
+	fmt.Println("2d: ", twoD)
+}
+
+func arrays() {
+	var a [5]int
+	fmt.Printf("emp: %v, type: %T\n", a, a)
+	a[4] = 100
+	fmt.Println("set: ", a)
+	fmt.Println("get: ", a[4])
+	fmt.Println("len: ", len(a))
+	b := [5]int{1, 2, 3, 4, 5}
+	fmt.Println("dcl: ", b)
+
+	var twoD [2][3]int
+	for i := 0; i < 2; i++ {
+		for j := 0; j < 3; j++ {
+			twoD[i][j] = i + j
+		}
+	}
+	fmt.Println("2d: ", twoD)
+}
+
+func switchCase() {
+	i := 2
+	fmt.Print("zrite ", i, " as ")
+	switch i {
+	case 1:
+		fmt.Println("one")
+	case 2:
+		fmt.Println("two")
+	case 3:
+		fmt.Println("three")
+	}
+
+	switch time.Now().Weekday() {
+	case time.Saturday, time.Sunday:
+		fmt.Println("It's the weekend")
+	default:
+		fmt.Println("It's a weekday")
+	}
+
+	t := time.Now()
+	switch { // if/else logic
+	case t.Hour() < 12:
+		fmt.Println("It's before noon")
+	case t.Hour() > 12:
+		fmt.Println("It's after noon")
+	}
+
+	whatAmI := func(i interface{}) {
+		switch t := i.(type) {
+		case bool:
+			fmt.Println("I'm a bool")
+		case int:
+			fmt.Println("I'm a int")
+		default:
+			fmt.Printf("Don't know type %T\n", t)
+		}
+	}
+	whatAmI(true)
+	whatAmI(1)
+	whatAmI("hey")
+}
+
+func ifelse() {
+	if 7%2 == 0 {
+		fmt.Println("7 is even")
+	} else {
+		fmt.Println("7 is odd")
+	}
+
+	if 8%4 == 0 {
+		fmt.Println("8 is divsible by 4")
+	}
+
+	if num := 9; num < 0 {
+		fmt.Println(num, "is negative")
+	} else if num < 10 {
+		fmt.Println(num, "has 1 digit")
+	} else {
+		fmt.Println(num, "has multiple digits")
+	}
+}
+
+func onlyfor() {
+	i := 1
+	for i < 3 {
+		fmt.Println(i)
+		i = i + 1
+	}
+	for j := 7; j < 9; j++ {
+		fmt.Println(j)
+	}
+	for {
+		fmt.Println("loop")
+		break
+	}
+	for n := 0; n < 5; n++ {
+		if n%2 == 0 {
+			continue
+		}
+		fmt.Println(n)
+	}
+	a := []int{1, 2, 3}
+	for k, v := range a {
+		fmt.Println(k, v)
+	}
+}
+
+func constants() {
+	const s string = "constant"
+	fmt.Println(s)
+	// a numeric constant has no type until it’s given one
+	const n = 500000000
+	const d = 3e20 / n
+	fmt.Println(d)
+	fmt.Println(int64(d))
+	fmt.Println(math.Sin(n))
+}
+
+func variables() {
+	var a = "init"
+	fmt.Println(a)
+	var b, c int = 1, 2
+	fmt.Println(b, c)
+	var d = true
+	fmt.Println(d)
+	var e bool
+	fmt.Println("bool:", e)
+	var f int
+	fmt.Println("int:", f)
+	var g string
+	fmt.Printf("string:%v type:%T \n", g, g)
+	var h byte // uint8 代表一个ASCII码
+	fmt.Printf("byte:%v type:%T \n", h, h)
+	var i rune // int32 代表一个UTF-8字符
+	fmt.Printf("rune:%v type:%T \n", i, i)
+	j := "golang"
+	fmt.Println(j)
+}
+
+func values() {
+	fmt.Println("go" + "lang")
+	fmt.Println("1+1 =", 1+1)
+	fmt.Println("7.0/3.0 =", 7.0/3.0)
+	fmt.Println(true && false)
+	fmt.Println(true || false)
+	fmt.Println(!true)
+}
+
+func helloworld() {
+	fmt.Println("hello world")
+}
