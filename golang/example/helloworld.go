@@ -9,7 +9,8 @@ import (
 // https://gobyexample.com/
 
 func main() {
-	functions()
+	pointers()
+	// functions()
 	// ranges()
 	// maps()
 	// slices()
@@ -23,8 +24,80 @@ func main() {
 	// helloworld()
 }
 
+func pointers() {
+	fmt.Println("TODO")
+}
+
 func functions() {
-	fmt.Println("here")
+	a := function1(1, 2)
+	fmt.Println(a)
+	b := function2(1, 2, 3)
+	fmt.Println(b)
+
+	c, d := multipleReturnValues()
+	fmt.Println(c, d)
+	_, e := multipleReturnValues()
+	fmt.Println(e)
+
+	variadicFunctions(1, 2)
+	variadicFunctions(3, 4, 5)
+	nums := []int{6, 7, 8}
+	variadicFunctions(nums...)
+
+	//anonymous functions
+	nextInt := closures()
+	fmt.Println(nextInt())
+	fmt.Println(nextInt())
+	fmt.Println(nextInt())
+	newInts := closures()
+	fmt.Println(newInts())
+
+	fmt.Println(recursion(7))
+	// Closures can also be recursive, but this requires the closure to be declared with a typed var explicitly before it’s defined.
+	var fib func(n int) int
+	fib = func(n int) int {
+		if n < 2 {
+			return n
+		}
+		return fib(n-1) + fib(n-2)
+	}
+	fmt.Println(fib(7))
+}
+
+func recursion(n int) int {
+	if n == 0 {
+		return 1
+	}
+	return n * recursion(n-1)
+}
+
+func closures() func() int {
+	i := 0
+	return func() int {
+		i++
+		return i
+	}
+}
+
+func variadicFunctions(nums ...int) {
+	fmt.Printf("nums:%v, type:%T ", nums, nums)
+	total := 0
+	for _, num := range nums {
+		total += num
+	}
+	fmt.Println("total:", total)
+}
+
+func multipleReturnValues() (int, int) {
+	return 3, 7
+}
+
+func function2(a, b, c int) int {
+	return a + b + c
+}
+
+func function1(a int, b int) int {
+	return a + b
 }
 
 func ranges() {
