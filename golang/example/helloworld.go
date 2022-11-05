@@ -4,12 +4,15 @@ import (
 	"fmt"
 	"math"
 	"time"
+	"unicode/utf8"
 )
 
 // https://gobyexample.com/
 
 func main() {
-	pointers()
+	structs()
+	// stringsAndRunes()
+	// pointers()
 	// functions()
 	// ranges()
 	// maps()
@@ -24,8 +27,63 @@ func main() {
 	// helloworld()
 }
 
+func structs() {
+	fmt.Println("HELLO")
+}
+
+func stringsAndRunes() {
+	// A Go string is a read-only slice of bytes.
+	// byte: uint8
+	// rune: int32
+	const s = "嗨咯，世界"
+	fmt.Printf("value:%v,type:%T\n", s, s)
+	byt := []byte(s)
+	fmt.Printf("len(s):%v,type:%T,byte:%v\n", len(s), byt, byt)
+	for i := 0; i < len(s); i++ {
+		fmt.Printf("%x,type:%T\t", s[i], s[i])
+	}
+	fmt.Println()
+	fmt.Println("Rune count:", utf8.RuneCountInString(s))
+	for idx, runeValue := range s {
+		fmt.Printf("%#U stars at %d\n", runeValue, idx)
+	}
+	fmt.Println("\nUsing DecodeRuneInstring")
+	for i, w := 0, 0; i < len(s); i += w {
+		runeValue, width := utf8.DecodeRuneInString(s[i:])
+		fmt.Printf("%#U starts at %d\n", runeValue, i)
+		w = width
+		examineRune(runeValue)
+	}
+}
+
+func examineRune(r rune) {
+	if r == 't' {
+		fmt.Println("found tee")
+	} else if r == '嗨' {
+		fmt.Printf("found 嗨,type:%T\n", r)
+	}
+}
+
 func pointers() {
-	fmt.Println("TODO")
+	i := 1
+	fmt.Println("init:", i)
+
+	zeroval(i)
+	fmt.Println("zeroval:", i)
+
+	zeroptr(&i)
+	fmt.Println("zeroptr:", i)
+
+	fmt.Println("pointer:", &i)
+
+}
+
+func zeroval(ival int) {
+	ival = 0
+}
+
+func zeroptr(iptr *int) {
+	*iptr = 0
 }
 
 func functions() {
