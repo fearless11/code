@@ -11,7 +11,8 @@ import (
 // https://gobyexample.com/
 
 func main() {
-	errorss()
+	goroutines()
+	// errorss()
 	// generics()
 	// structEmbedding()
 	// interfaces()
@@ -30,6 +31,10 @@ func main() {
 	// variables()
 	// values()
 	// helloworld()
+}
+
+func goroutines() {
+	fmt.Println("hello world")
 }
 
 func errorss() {
