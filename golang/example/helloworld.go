@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"math"
 	"time"
@@ -10,7 +11,11 @@ import (
 // https://gobyexample.com/
 
 func main() {
-	structs()
+	errorss()
+	// generics()
+	// structEmbedding()
+	// interfaces()
+	// structs()
 	// stringsAndRunes()
 	// pointers()
 	// functions()
@@ -27,8 +32,223 @@ func main() {
 	// helloworld()
 }
 
+func errorss() {
+	for _, i := range []int{7, 42} {
+		if r, e := f1(i); e != nil {
+			fmt.Println("f1 failed:", e)
+		} else {
+			fmt.Println("f1 worked:", r)
+		}
+	}
+
+	for _, i := range []int{7, 42} {
+		if r, e := f2(i); e != nil {
+			fmt.Println("f2 failed:", e)
+		} else {
+			fmt.Println("f2 worked:", r)
+		}
+	}
+
+	_, e := f2(42)
+	if ae, ok := e.(*argError); ok {
+		fmt.Println(ae.arg, ae.prob)
+	}
+
+}
+
+func f1(arg int) (int, error) {
+	if arg == 42 {
+		return -1, errors.New("can't work with 42")
+	}
+	return arg + 3, nil
+}
+
+type argError struct {
+	arg  int
+	prob string
+}
+
+func (e *argError) Error() string {
+	return fmt.Sprintf("%d - %s", e.arg, e.prob)
+}
+
+func f2(arg int) (int, error) {
+	if arg == 42 {
+		return -1, &argError{arg, "can't work with it"}
+	}
+	return arg + 3, nil
+}
+
+// 泛型 类似C++中的类模板
+func generics() {
+	var m = map[int]string{1: "a", 2: "b", 3: "c"}
+	fmt.Println("keys:", gmapKeys(m))
+
+	m1 := gmapKeys[int, string](m)
+	fmt.Println("m1:", m1)
+
+	lst := glist[int]{}
+	lst.Push(10)
+	lst.Push(13)
+	lst.Push(23)
+	fmt.Println("list:", lst.GetAll())
+}
+
+func gmapKeys[K comparable, V any](m map[K]V) []K {
+	r := make([]K, 0, len(m))
+	for k := range m {
+		r = append(r, k)
+	}
+	return r
+}
+
+type glist[T any] struct {
+	head, tail *element[T]
+}
+
+type element[T any] struct {
+	next *element[T]
+	val  T
+}
+
+func (lst *glist[T]) Push(v T) {
+	if lst.tail == nil {
+		lst.head = &element[T]{val: v}
+		lst.tail = lst.head
+	} else {
+		lst.tail.next = &element[T]{val: v}
+		lst.tail = lst.tail.next
+	}
+}
+
+func (lst *glist[T]) GetAll() []T {
+	var elems []T
+	for e := lst.head; e != nil; e = e.next {
+		elems = append(elems, e.val)
+	}
+	return elems
+}
+
+func structEmbedding() {
+	co := container{
+		base: base{
+			num: 1,
+		},
+		str: "some name",
+	}
+	fmt.Printf("co={num:%v,str:%v}\n", co.num, co.str)
+	fmt.Println("also num:", co.base.num)
+	fmt.Println("describe:", co.describe())
+
+	type describer interface {
+		describe() string
+	}
+
+	var d describer = co
+	fmt.Println("describe:", d.describe())
+
+}
+
+type base struct {
+	num int
+}
+
+func (b base) describe() string {
+	return fmt.Sprintf("base with num=%v", b.num)
+}
+
+type container struct {
+	base
+	str string
+}
+
+// Interfaces are named collections of method signatures.
+func interfaces() {
+	r := recta{name: "recta", width: 3, height: 5}
+	c := circle{name: "circle", radius: 5}
+	measure(r)
+	measure(c)
+}
+
+type geometry interface {
+	area() float64
+	perim() float64
+}
+
+type recta struct {
+	name          string
+	width, height float64
+}
+
+func (r recta) area() float64 {
+	return r.width * r.height
+}
+
+func (r recta) perim() float64 {
+	return 2*r.width + 2*r.height
+}
+
+type circle struct {
+	name   string
+	radius float64
+}
+
+func (c circle) area() float64 {
+	return math.Pi * c.radius * c.radius
+}
+
+func (c circle) perim() float64 {
+	return 2 * math.Pi * c.radius
+}
+
+func measure(g geometry) {
+	fmt.Println(g)
+	fmt.Println(g.area())
+	fmt.Println(g.perim())
+}
+
+// Go’s structs are typed collections of fields.
 func structs() {
-	fmt.Println("HELLO")
+	fmt.Println(person{"Bob", 20})
+	fmt.Println(person{name: "Alice", age: 30})
+	fmt.Println(person{name: "Fred"})
+	fmt.Println(&person{name: "Ann", age: 40})
+	fmt.Println(newPerson("Jon"))
+	s := person{name: "Sean", age: 50}
+	fmt.Println(s.name)
+	sp := &s
+	fmt.Println(sp.name, sp.age)
+	sp.age = 51
+	fmt.Println(sp, s)
+
+	// methods
+	r := rect{width: 10, height: 5}
+	fmt.Printf("area:%v perim:%v\n", r.area(), r.perim())
+	rp := &r
+	fmt.Printf("area:%v perim:%v\n", rp.area(), rp.perim())
+}
+
+type person struct {
+	name string
+	age  int
+}
+
+func newPerson(name string) *person {
+	p := person{name: name}
+	p.age = 42
+	return &p
+}
+
+type rect struct {
+	width, height float64
+}
+
+func (r *rect) area() float64 {
+	return r.width * r.height
+}
+
+func (r rect) perim() float64 {
+	return 2*r.width + 2*r.height
 }
 
 func stringsAndRunes() {
