@@ -1,0 +1,10 @@
+[alias]
+	co = checkout
+	br = branch
+	ci = commit
+	st = status
+[user]
+	email = fearless11
+	name = fearless11
+[push]
+	default = matching
