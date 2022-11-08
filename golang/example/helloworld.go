@@ -11,6 +11,9 @@ import (
 // https://gobyexample.com/
 
 func main() {
+
+	// timeouts()
+	// selects()
 	channels()
 	// goroutines()
 	// errorss()
@@ -34,8 +37,163 @@ func main() {
 	// helloworld()
 }
 
+// Timeouts are important for programs that connect to external resources or that otherwise need to bound execution time.
+func timeouts() {
+	c1 := make(chan string, 1)
+	go func() {
+		time.Sleep(2 * time.Second)
+		c1 <- "result 1"
+	}()
+
+	select {
+	case res := <-c1:
+		fmt.Println(res)
+	case <-time.After(1 * time.Second):
+		fmt.Println("timeout 1")
+	}
+
+	c2 := make(chan string, 1)
+	go func() {
+		time.Sleep(2 * time.Second)
+		c2 <- "result 2"
+	}()
+
+	select {
+	case res := <-c2:
+		fmt.Println(res)
+	case <-time.After(3 * time.Second):
+		fmt.Println("timeout 2")
+	}
+}
+
+// Go’s select lets you wait on multiple channel operations.
+func selects() {
+	c1 := make(chan string)
+	c2 := make(chan string)
+	go func() {
+		time.Sleep(1 * time.Second)
+		c1 <- "one"
+	}()
+
+	go func() {
+		time.Sleep(2 * time.Second)
+		c2 <- "two"
+	}()
+
+	for i := 0; i < 2; i++ {
+		select {
+		case msg1 := <-c1:
+			fmt.Println("received:", msg1)
+		case msg2 := <-c2:
+			fmt.Println("received:", msg2)
+		}
+	}
+}
+
+// Channels are the pipes that connect concurrent goroutines.
 func channels() {
+	// channel()
+	// channelBuffer()
+	// channelSync()
+	// channelDirections()
+	// channelNonBlock()
+	channelClose()
+}
+
+func channelClose() {
 	fmt.Println("hello world")
+}
+
+// Basic sends and receives on channels are blocking.
+// Must be prepared at the same time
+func channelNonBlock() {
+	messages := make(chan string)
+	signals := make(chan bool)
+
+	// go func() {
+	// 	<-messages
+	// 	signals <- true
+	// }()
+	// time.Sleep(1 * time.Second)
+
+	select {
+	case msg := <-messages:
+		fmt.Println("recevied message", msg)
+	default:
+		// run result
+		fmt.Println("no message received")
+	}
+
+	// because the channel has no buffer and there is no receiver
+	msg := "hi"
+	select {
+	case messages <- msg:
+		fmt.Println("sent message", msg)
+	default:
+		// run result
+		fmt.Println("no message sent")
+	}
+
+	select {
+	case msg := <-messages:
+		fmt.Println("received message", msg)
+	case sig := <-signals:
+		fmt.Println("received signal", sig)
+	default:
+
+		fmt.Println("no activity")
+	}
+
+	time.Sleep(2 * time.Second)
+}
+
+// This specificity increases the type-safety of the program.
+func channelDirections() {
+	pings := make(chan string, 1)
+	pongs := make(chan string, 1)
+	ping(pings, "passed message")
+	pong(pings, pongs)
+	fmt.Println(<-pongs)
+}
+
+func ping(pings chan<- string, msg string) {
+	pings <- msg
+}
+
+func pong(pings <-chan string, pongs chan<- string) {
+	msg := <-pings
+	pongs <- msg
+}
+
+func channelSync() {
+	done := make(chan bool, 1)
+	go worker(done)
+	<-done
+}
+
+func worker(done chan bool) {
+	fmt.Println("working...")
+	time.Sleep(time.Second)
+	fmt.Println("done")
+	done <- true
+}
+
+func channelBuffer() {
+	messages := make(chan string, 2)
+	messages <- "buffered"
+	messages <- "channel"
+	fmt.Println(<-messages)
+	fmt.Println(<-messages)
+}
+
+func channel() {
+	message := make(chan string)
+	go func() {
+		message <- "ping"
+	}()
+
+	msg := <-message
+	fmt.Println(msg)
 }
 
 func goroutines() {
