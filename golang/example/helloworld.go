@@ -11,7 +11,8 @@ import (
 // https://gobyexample.com/
 
 func main() {
-	goroutines()
+	channels()
+	// goroutines()
 	// errorss()
 	// generics()
 	// structEmbedding()
@@ -33,8 +34,26 @@ func main() {
 	// helloworld()
 }
 
-func goroutines() {
+func channels() {
 	fmt.Println("hello world")
+}
+
+func goroutines() {
+	f("direct")
+	go f("goroutine")
+
+	go func(msg string) {
+		fmt.Println(msg)
+	}("going")
+
+	time.Sleep(time.Second)
+	fmt.Println("done")
+}
+
+func f(from string) {
+	for i := 0; i < 3; i++ {
+		fmt.Println(from, ":", i)
+	}
 }
 
 func errorss() {
