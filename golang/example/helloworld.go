@@ -11,10 +11,10 @@ import (
 // https://gobyexample.com/
 
 func main() {
-
-	// timeouts()
+	workerPools()
+	// times()
 	// selects()
-	channels()
+	// channels()
 	// goroutines()
 	// errorss()
 	// generics()
@@ -35,6 +35,66 @@ func main() {
 	// variables()
 	// values()
 	// helloworld()
+}
+
+func workerPools() {
+	// const numJobs = 5
+	fmt.Println("hello world")
+}
+
+func woker(id int, jobs <-chan int, results chan<- int) {
+	for j := range jobs {
+		fmt.Println("woker", id, "started job", j)
+		time.Sleep(time.Second)
+		fmt.Println("woker", id, "finished job", j)
+		results <- j * 2
+	}
+}
+
+func times() {
+	timeouts()
+	timeWait()
+	timeTicker()
+}
+
+func timeTicker() {
+	ticker := time.NewTicker(500 * time.Millisecond)
+	done := make(chan bool)
+
+	go func() {
+		for {
+			select {
+			case <-done:
+				return
+			case t := <-ticker.C:
+				fmt.Println("tick at ", t)
+			}
+		}
+	}()
+
+	time.Sleep(1600 * time.Millisecond)
+	done <- true
+	ticker.Stop()
+	fmt.Println("ticker stopped")
+
+}
+
+func timeWait() {
+	timer1 := time.NewTimer(2 * time.Second)
+	<-timer1.C
+	fmt.Println("timer 1 fired")
+
+	timer2 := time.NewTimer(time.Second)
+	go func() {
+		<-timer2.C
+		fmt.Println("timer 2 fired")
+	}()
+
+	stop := timer2.Stop()
+	if stop {
+		fmt.Println("timer 2 stopped")
+	}
+	time.Sleep(2 * time.Second)
 }
 
 // Timeouts are important for programs that connect to external resources or that otherwise need to bound execution time.
@@ -92,16 +152,52 @@ func selects() {
 
 // Channels are the pipes that connect concurrent goroutines.
 func channels() {
-	// channel()
-	// channelBuffer()
-	// channelSync()
-	// channelDirections()
-	// channelNonBlock()
+	channel()
+	channelBuffer()
+	channelSync()
+	channelDirections()
+	channelNonBlock()
 	channelClose()
+	channelRange()
+}
+
+func channelRange() {
+	queue := make(chan string, 2)
+	queue <- "one"
+	queue <- "two"
+	close(queue)
+
+	for elem := range queue {
+		fmt.Println(elem)
+	}
 }
 
 func channelClose() {
-	fmt.Println("hello world")
+	jobs := make(chan int, 5)
+	done := make(chan bool)
+
+	go func() {
+		for {
+			i, more := <-jobs
+			if more {
+				fmt.Println("received job", i)
+			} else {
+				fmt.Println("received all jobs")
+				done <- true
+				return
+			}
+		}
+	}()
+
+	for i := 1; i <= 3; i++ {
+		jobs <- i
+		fmt.Println("send job", i)
+	}
+	// deadlock if not closed
+	close(jobs)
+	fmt.Println("send all jobs")
+
+	<-done
 }
 
 // Basic sends and receives on channels are blocking.
