@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"math"
+	"sync"
 	"time"
 	"unicode/utf8"
 )
@@ -11,7 +12,9 @@ import (
 // https://gobyexample.com/
 
 func main() {
-	workerPools()
+	rateLimiting()
+	// waitGroups()
+	// workerPools()
 	// times()
 	// selects()
 	// channels()
@@ -37,12 +40,53 @@ func main() {
 	// helloworld()
 }
 
-func workerPools() {
-	// const numJobs = 5
+func rateLimiting() {
 	fmt.Println("hello world")
 }
 
-func woker(id int, jobs <-chan int, results chan<- int) {
+func waitGroups() {
+	var wg sync.WaitGroup
+
+	for i := 1; i <= 5; i++ {
+		wg.Add(1)
+		// Avoid re-use of the same i value in each goroutine closure.
+		i := i
+		go func() {
+			defer wg.Done()
+			worker3(i)
+		}()
+	}
+	wg.Wait()
+}
+
+func worker3(id int) {
+	fmt.Printf("worked %d staring\n", id)
+	time.Sleep(time.Second)
+	fmt.Printf("worked %d done\n", id)
+}
+
+func workerPools() {
+	const numJobs = 5
+	jobs := make(chan int, numJobs)
+	results := make(chan int, numJobs)
+
+	for i := 1; i <= 3; i++ {
+		go worker2(i, jobs, results)
+	}
+
+	for j := 1; j <= numJobs; j++ {
+		jobs <- j
+	}
+	// 后面的执行与关闭代码位置无关
+	close(jobs)
+
+	for K := 1; K <= numJobs; K++ {
+		res := <-results
+		fmt.Println(res)
+	}
+}
+
+func worker2(id int, jobs <-chan int, results chan<- int) {
 	for j := range jobs {
 		fmt.Println("woker", id, "started job", j)
 		time.Sleep(time.Second)
