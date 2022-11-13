@@ -12,8 +12,8 @@ import (
 // https://gobyexample.com/
 
 func main() {
-	rateLimiting()
-	// waitGroups()
+	// rateLimit()
+	waitGroups()
 	// workerPools()
 	// times()
 	// selects()
@@ -40,7 +40,7 @@ func main() {
 	// helloworld()
 }
 
-func rateLimiting() {
+func rateLimit() {
 	fmt.Println("hello world")
 }
 
