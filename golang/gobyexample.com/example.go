@@ -12,6 +12,15 @@ import (
 
 // https://gobyexample.com/
 
+// time comment
+// 1: month (January, Jan, 01, etc)
+// 2: day
+// 3: hour (15 is 3pm on a 24 hour clock)
+// 4: minute
+// 5: second
+// 6: year (2006)
+// 7: timezone (GMT-7 is MST)
+
 func main() {
 	statefulGoroutines()
 	// mutexes()
@@ -579,10 +588,25 @@ type container struct {
 
 // Interfaces are named collections of method signatures.
 func interfaces() {
+
+	fmt.Println("interface word String,", new(word))
+
 	r := recta{name: "recta", width: 3, height: 5}
 	c := circle{name: "circle", radius: 5}
 	measure(r)
 	measure(c)
+}
+
+type word struct{}
+
+func (w *word) String() string {
+	return "hello world"
+}
+
+func measure(g geometry) {
+	fmt.Println(g)
+	fmt.Println(g.area())
+	fmt.Println(g.perim())
 }
 
 type geometry interface {
@@ -614,12 +638,6 @@ func (c circle) area() float64 {
 
 func (c circle) perim() float64 {
 	return 2 * math.Pi * c.radius
-}
-
-func measure(g geometry) {
-	fmt.Println(g)
-	fmt.Println(g.area())
-	fmt.Println(g.perim())
 }
 
 // Go’s structs are typed collections of fields.
