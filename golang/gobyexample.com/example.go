@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math"
 	"sync"
+	"sync/atomic"
 	"time"
 	"unicode/utf8"
 )
@@ -12,8 +13,11 @@ import (
 // https://gobyexample.com/
 
 func main() {
-	// rateLimit()
-	waitGroups()
+	statefulGoroutines()
+	// mutexes()
+	// atomicCounters()
+	// rateLimiting()
+	// waitGroups()
 	// workerPools()
 	// times()
 	// selects()
@@ -40,8 +44,97 @@ func main() {
 	// helloworld()
 }
 
-func rateLimit() {
+func statefulGoroutines() {
 	fmt.Println("hello world")
+}
+
+func mutexes() {
+	c := counter{
+		counters: map[string]int{"a": 0, "b": 0},
+	}
+	var wg sync.WaitGroup
+	doIncrement := func(name string, n int) {
+		for i := 0; i < n; i++ {
+			c.Inc(name)
+		}
+		wg.Done()
+	}
+	wg.Add(3)
+	go doIncrement("a", 10000)
+	go doIncrement("a", 10000)
+	go doIncrement("b", 10000)
+	wg.Wait()
+	fmt.Println(c.counters)
+
+}
+
+type counter struct {
+	mu       sync.Mutex
+	counters map[string]int
+}
+
+func (c *counter) Inc(name string) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	c.counters[name]++
+}
+
+func atomicCounters() {
+	var ops uint64
+	var wg sync.WaitGroup
+
+	for i := 0; i < 50; i++ {
+		wg.Add(1)
+		go func() {
+			for c := 0; c < 1000; c++ {
+				// because the goroutines would interfere with each other. Moreover, we’d get data race failures when running with the -race flag.
+				// ops++
+				// atomics safely
+				atomic.AddUint64(&ops, 1)
+			}
+			wg.Done()
+		}()
+	}
+	wg.Wait()
+
+	fmt.Println("ops:", ops)
+}
+
+func rateLimiting() {
+	requests := make(chan int, 5)
+	for i := 0; i < 5; i++ {
+		requests <- i
+	}
+	close(requests)
+
+	limiter := time.Tick(200 * time.Millisecond)
+	for req := range requests {
+		<-limiter
+		fmt.Println("request", req, time.Now())
+	}
+
+	fmt.Println("bursty")
+
+	burstyLimiter := make(chan time.Time, 3)
+	for i := 0; i < 3; i++ {
+		burstyLimiter <- time.Now()
+	}
+	go func() {
+		for t := range time.Tick(200 * time.Millisecond) {
+			burstyLimiter <- t
+		}
+	}()
+
+	burstyRequests := make(chan int, 5)
+	for i := 0; i < 5; i++ {
+		burstyRequests <- i
+	}
+	close(burstyRequests)
+	for req := range burstyRequests {
+		<-burstyLimiter
+		fmt.Println("request", req, time.Now())
+	}
+
 }
 
 func waitGroups() {
