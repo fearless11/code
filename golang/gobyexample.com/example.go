@@ -4,6 +4,9 @@ import (
 	"errors"
 	"fmt"
 	"math"
+	"math/rand"
+	"os"
+	"sort"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -22,7 +25,11 @@ import (
 // 7: timezone (GMT-7 is MST)
 
 func main() {
-	statefulGoroutines()
+	recovers()
+	// defers()
+	// panics()
+	// sorting()
+	// statefulGoroutines()
 	// mutexes()
 	// atomicCounters()
 	// rateLimiting()
@@ -53,8 +60,154 @@ func main() {
 	// helloworld()
 }
 
-func statefulGoroutines() {
+func recovers() {
 	fmt.Println("hello world")
+}
+
+func defers() {
+	// LIFO
+	defer func() {
+		fmt.Println("one")
+	}()
+	defer func() {
+		fmt.Println("two")
+	}()
+
+	f := createFile("/tmp/defer.txt")
+	defer closeFile(f)
+	writeFile(f)
+}
+
+func createFile(p string) *os.File {
+	fmt.Println("creating")
+	f, err := os.Create(p)
+	if err != nil {
+		panic(err)
+	}
+	return f
+}
+
+func writeFile(f *os.File) {
+	fmt.Println("writing")
+	fmt.Fprintln(f, "data")
+}
+
+func closeFile(f *os.File) {
+	fmt.Println("closing")
+	err := f.Close()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "error: %v\n", err)
+		os.Exit(1)
+	}
+}
+
+func panics() {
+	panic("a problem")
+	fmt.Println("panic")
+}
+
+func sorting() {
+	strs := []string{"c", "a", "b", "d"}
+	sort.Strings(strs)
+	fmt.Println("strings:", strs)
+
+	ints := []int{7, 2, 4}
+	sort.Ints(ints)
+	fmt.Println("ints:", ints)
+
+	s := sort.IntsAreSorted(ints)
+	fmt.Println("sorted:", s)
+
+	sortingByFunc()
+}
+
+func sortingByFunc() {
+	fruits := []string{"peach", "banana", "kiwi"}
+	sort.Sort(byLength(fruits))
+	fmt.Println(fruits)
+}
+
+type byLength []string
+
+func (s byLength) Len() int {
+	return len(s)
+}
+
+func (s byLength) Swap(i, j int) {
+	s[i], s[j] = s[j], s[i]
+}
+
+func (s byLength) Less(i, j int) bool {
+	return len(s[i]) < len(s[j])
+}
+
+func statefulGoroutines() {
+	var readOps uint64
+	var writeOps uint64
+
+	reads := make(chan readOp)
+	writes := make(chan writeOp)
+
+	go func() {
+		var state = make(map[int]int)
+		for {
+			select {
+			case read := <-reads:
+				read.resp <- state[read.key]
+			case write := <-writes:
+				state[write.key] = write.val
+				write.resp <- true
+			}
+		}
+	}()
+
+	for r := 0; r < 100; r++ {
+		go func() {
+			for {
+				read := readOp{
+					key:  rand.Intn(5),
+					resp: make(chan int),
+				}
+				reads <- read
+				<-read.resp
+				atomic.AddUint64(&readOps, 1)
+				time.Sleep(time.Millisecond)
+			}
+		}()
+	}
+
+	for w := 0; w < 10; w++ {
+		go func() {
+			for {
+				write := writeOp{
+					key:  rand.Intn(5),
+					val:  rand.Intn(100),
+					resp: make(chan bool),
+				}
+				writes <- write
+				<-write.resp
+				atomic.AddUint64(&writeOps, 1)
+				time.Sleep(time.Millisecond)
+			}
+		}()
+	}
+
+	time.Sleep(time.Second)
+	readOpsFinal := atomic.LoadUint64(&readOps)
+	fmt.Println(readOpsFinal)
+	writeOpsFinal := atomic.LoadUint64(&writeOps)
+	fmt.Println(writeOpsFinal)
+}
+
+type readOp struct {
+	key  int
+	resp chan int
+}
+
+type writeOp struct {
+	key  int
+	val  int
+	resp chan bool
 }
 
 func mutexes() {
