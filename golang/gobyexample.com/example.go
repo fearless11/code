@@ -7,6 +7,7 @@ import (
 	"math/rand"
 	"os"
 	"sort"
+	s "strings"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -25,7 +26,9 @@ import (
 // 7: timezone (GMT-7 is MST)
 
 func main() {
-	recovers()
+	fmtFunc()
+	// stringsFunc()
+	// recovers()
 	// defers()
 	// panics()
 	// sorting()
@@ -60,8 +63,39 @@ func main() {
 	// helloworld()
 }
 
-func recovers() {
+func fmtFunc() {
 	fmt.Println("hello world")
+}
+
+type point struct {
+	x, y int
+}
+
+func stringsFunc() {
+	var p = fmt.Println
+	p("contains: ", s.Contains("test", "es"))
+	p("count:", s.Count("test", "t"))
+	p("hasSuffix:", s.HasPrefix("test", "te"))
+	p("hasSuffix:", s.HasSuffix("test", "st"))
+	p("index:", s.Index("test", "e"))
+	p("join:", s.Join([]string{"a", "b"}, "-"))
+	p("repeat:", s.Repeat("a", 5))
+	p("replace:", s.Replace("foo", "o", "a", -1))
+	p("replace:", s.Replace("foo", "o", "a", 1))
+	p("split:", s.Split("a-b-c-d", "-"))
+	p("ToLower:", s.ToLower("TEST"))
+	p("ToUpper:", s.ToUpper("test"))
+}
+
+func recovers() {
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Println("recovered. Error: ", r)
+		}
+	}()
+
+	panic("a problem")
+	fmt.Println("after panic")
 }
 
 func defers() {
