@@ -1,15 +1,18 @@
 package main
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"math"
 	"math/rand"
 	"os"
+	"regexp"
 	"sort"
 	s "strings"
 	"sync"
 	"sync/atomic"
+	"text/template"
 	"time"
 	"unicode/utf8"
 )
@@ -26,7 +29,10 @@ import (
 // 7: timezone (GMT-7 is MST)
 
 func main() {
-	fmtFunc()
+	jsons()
+	// regularExpressions()
+	// textTemplates()
+	// fmtFunc()
 	// stringsFunc()
 	// recovers()
 	// defers()
@@ -63,8 +69,100 @@ func main() {
 	// helloworld()
 }
 
-func fmtFunc() {
+func jsons() {
 	fmt.Println("hello world")
+}
+
+func regularExpressions() {
+	match, _ := regexp.MatchString("p([a-z]+)ch", "peach")
+	fmt.Println(match)
+
+	r, _ := regexp.Compile("p([a-z]+)ch")
+	fmt.Println(r.MatchString("peach"))
+	fmt.Println(r.FindString("peach punch"))
+	fmt.Println("idx:", r.FindStringIndex("peach punch"))
+	fmt.Println(r.FindStringSubmatch("peach punch"))
+	fmt.Println(r.FindAllString("peach punch", -1))
+	fmt.Println("idx:", r.FindAllStringIndex("peach punch", -1))
+	fmt.Println("idx:", r.FindAllStringSubmatchIndex("peach punch", -1))
+	fmt.Println(r.Match([]byte("peach")))
+	r = regexp.MustCompile("p([a-z]+)ch")
+	fmt.Println("regexp:", r)
+	fmt.Println(r.ReplaceAllString("a peach", "fruit"))
+	in := []byte("peach")
+	out := r.ReplaceAllFunc(in, bytes.ToUpper)
+	fmt.Println(string(out))
+}
+
+func textTemplates() {
+	t1 := template.New("t1")
+	t1, err := t1.Parse("value is {{ . }}\n")
+	if err != nil {
+		panic(err)
+	}
+	// the template.Must function to panic in case Parse returns an error.
+	t1 = template.Must(t1.Parse("value is {{ . }}\n"))
+	t1.Execute(os.Stdout, "some text")
+	t1.Execute(os.Stdout, 5)
+	t1.Execute(os.Stdout, []string{"Go", "Python", "Javascript"})
+
+	create := func(name, t string) *template.Template {
+		return template.Must(template.New(name).Parse(t))
+	}
+
+	t2 := create("t1", "Name: {{.Name}}\n")
+	t2.Execute(os.Stdout, struct {
+		Name string
+	}{"Mary"})
+	t2.Execute(os.Stdout, map[string]string{
+		"Name": "Tom",
+	})
+
+	t3 := create("t3",
+		"{{ if . -}} yes {{else -}} no {{end}}\n")
+	t3.Execute(os.Stdout, " not empty")
+	t3.Execute(os.Stdout, "")
+
+	t4 := create("t4",
+		"Range: {{range .}} {{.}} {{end}}\n")
+	t4.Execute(os.Stdout, []string{"Go", "C", "Python"})
+}
+
+func fmtFunc() {
+	p := fpoint{1, 2}
+	fmt.Printf("struct: %v\n", p)
+	fmt.Printf("struct: %+v\n", p)
+	fmt.Printf("struct: %#v\n", p)
+	fmt.Printf("type: %T\n", p)
+	fmt.Printf("pointer: %p\n", &p)
+
+	fmt.Printf("bool: %t\n", true)
+	fmt.Printf("int: %d\n", 123)
+	fmt.Printf("bin: %b\n", 14)
+	fmt.Printf("char: %c\n", 33)
+	fmt.Printf("hex: %x\n", 10)
+	fmt.Printf("float: %f\n", 78.9)
+	fmt.Printf("float: %e\n", 123400000.0)
+	fmt.Printf("float: %E\n", 123400000.0)
+	fmt.Printf("str: %s\n", "\"string\"")
+	fmt.Printf("str: %q\n", "\"string\"")
+	fmt.Printf("str: %x\n", "a b")
+
+	fmt.Printf("wdith: |%6d|%6d|\n", 12, 345)
+	fmt.Printf("wdith: |%-6d|%-6d|\n", 12, 345)
+	fmt.Printf("wdith: |%6.3f|%6.3f|\n", 1.2, 3.45)
+	fmt.Printf("wdith: |%-6.3f|%-6.3f|\n", 1.2, 3.45)
+	fmt.Printf("wdith: |%6s|%6s|\n", "foo", "b")
+	fmt.Printf("wdith: |%-6s|%-6s|\n", "foo", "b")
+
+	s := fmt.Sprintf("sprintf: a %s", "string")
+	fmt.Println(s)
+
+	fmt.Fprintf(os.Stderr, "io: an %s\n", "error")
+}
+
+type fpoint struct {
+	x, y int
 }
 
 type point struct {
