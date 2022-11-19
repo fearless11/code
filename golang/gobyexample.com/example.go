@@ -1,16 +1,26 @@
 package main
 
 import (
+	"bufio"
 	"bytes"
+	"crypto/sha256"
+	"crypto/sha512"
+	"encoding/base64"
 	"encoding/json"
 	"encoding/xml"
 	"errors"
 	"fmt"
+	"io"
 	"math"
 	"math/rand"
+	"net"
+	"net/url"
 	"os"
+	"path/filepath"
 	"regexp"
 	"sort"
+	"strconv"
+	"strings"
 	s "strings"
 	"sync"
 	"sync/atomic"
@@ -21,60 +31,344 @@ import (
 
 // https://gobyexample.com/
 
-// time comment
-// 1: month (January, Jan, 01, etc)
-// 2: day
-// 3: hour (15 is 3pm on a 24 hour clock)
-// 4: minute
-// 5: second
-// 6: year (2006)
-// 7: timezone (GMT-7 is MST)
-
 func main() {
-	timeFormat()
-	// xmls()
-	// jsons()
-	// regularExpressions()
-	// textTemplates()
-	// fmtFunc()
-	// stringsFunc()
-	// recovers()
-	// defers()
-	// panics()
-	// sorting()
-	// statefulGoroutines()
-	// mutexes()
-	// atomicCounters()
-	// rateLimiting()
-	// waitGroups()
-	// workerPools()
-	// times()
-	// selects()
-	// channels()
-	// goroutines()
-	// errorss()
-	// generics()
-	// structEmbedding()
-	// interfaces()
-	// structs()
-	// stringsAndRunes()
-	// pointers()
-	// functions()
-	// ranges()
-	// maps()
-	// slices()
-	// arrays()
-	// switchCase()
-	// ifelse()
-	// onlyfor()
-	// constants()
-	// variables()
-	// values()
 	// helloworld()
+	// values()
+	// variables()
+	// constants()
+	// onlyfor()
+	// ifelse()
+	// switchCase()
+	// arrays()
+	// slices()
+	// maps()
+	// ranges()
+	// functions()
+	// pointers()
+	// stringsAndRunes()
+	// structs()
+	// interfaces()
+	// structEmbedding()
+	// generics()
+	// errorss()
+	// goroutines()
+	// channels()
+	// selects()
+	// times()
+	// workerPools()
+	// waitGroups()
+	// rateLimiting()
+	// atomicCounters()
+	// mutexes()
+	// statefulGoroutines()
+	// sorting()
+	// panics()
+	// defers()
+	// recovers()
+	// stringsFunc()
+	// fmtFunc()
+	// textTemplates()
+	// regularExpressions()
+	// jsons()
+	// xmls()
+	// timeFormat()
+	// randomNum()
+	// numberParse()
+	// urlParse()
+	// sha256Hashes()
+	// base64Encoding()
+	// readFiles()
+	// writeFiles()
+	// lineFilters()
+	// filePaths()
+	directories()
+
 }
 
-func timeFormat() {
+func directories() {
 	fmt.Println("HELLO WORLD")
+}
+
+func filePaths() {
+	p := filepath.Join("dir1", "dir2", "filename")
+	fmt.Println("p:", p)
+	fmt.Println(filepath.Join("dir1//", "filename"))
+	fmt.Println(filepath.Join("dir1/../dir1", "filename"))
+	fmt.Println("Dir(p):", filepath.Dir(p))
+	fmt.Println("Base(p):", filepath.Base(p))
+
+	fmt.Println(filepath.IsAbs("dir/file"))
+	fmt.Println(filepath.IsAbs("/dir/file"))
+	filename := "config.json"
+	ext := filepath.Ext(filename)
+	fmt.Println(ext)
+	fmt.Println(strings.TrimSuffix(filename, ext))
+
+	rel, err := filepath.Rel("a/b", "a/b/t/file")
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(rel)
+
+	rel, err = filepath.Rel("a/b", "a/c/t/file")
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(rel)
+
+}
+
+// echo "hello\ngo\n" > /tmp/data1
+// cat /tmp/data1 | go run example.go
+func lineFilters() {
+	scanner := bufio.NewScanner(os.Stdin)
+	for scanner.Scan() {
+		ucl := strings.ToUpper(scanner.Text())
+		fmt.Println(ucl)
+	}
+	if err := scanner.Err(); err != nil {
+		fmt.Fprintln(os.Stderr, "error: ", err)
+		os.Exit(1)
+	}
+}
+
+// overwrite write
+func writeFiles() {
+	b1 := []byte("hello\ngo\n")
+	err := os.WriteFile("/tmp/data1", b1, 0664)
+	check(err)
+
+	f, err := os.Create("/tmp/data2")
+	check(err)
+	defer f.Close()
+
+	b2 := []byte{115, 111, 109, 101, 10}
+	n2, err := f.Write(b2)
+	check(err)
+	fmt.Printf("write %d bytes\n", n2)
+
+	n3, err := f.WriteString("happy\n")
+	check(err)
+	fmt.Printf("write %d bytes\n", n3)
+	f.Sync()
+
+	w := bufio.NewWriter(f)
+	n4, err := w.WriteString("bufio\n")
+	check(err)
+	fmt.Printf("write %d bytes\n", n4)
+	w.Flush()
+}
+
+func readFiles() {
+	data, err := os.ReadFile("/tmp/data")
+	check(err)
+	fmt.Print(string(data))
+
+	f, err := os.Open("/tmp/data")
+	check(err)
+	b1 := make([]byte, 5)
+	n1, err := f.Read(b1)
+	check(err)
+	fmt.Printf("%d bytes: %s\n", n1, string(b1[:n1]))
+
+	o2, err := f.Seek(6, 0)
+	check(err)
+	b2 := make([]byte, 2)
+	n2, err := f.Read(b2)
+	check(err)
+	fmt.Printf("%d bytes@ %d: %v\n", n2, o2, string(b2[:n2]))
+
+	o3, err := f.Seek(6, 0)
+	check(err)
+	b3 := make([]byte, 2)
+	n3, err := io.ReadAtLeast(f, b3, 2)
+	check(err)
+	fmt.Printf("%d bytes@ %d: %v\n", n3, o3, string(b3))
+
+	_, err = f.Seek(0, 0)
+	check(err)
+	r4 := bufio.NewReader(f)
+	b4, err := r4.Peek(5)
+	check(err)
+	fmt.Printf("5 bytes: %s\n", string(b4))
+	f.Close()
+
+}
+
+func check(e error) {
+	if e != nil {
+		panic(e)
+	}
+}
+
+func base64Encoding() {
+	data := "abc123!?$*&()'-=@~"
+	sEnc := base64.StdEncoding.EncodeToString([]byte(data))
+	fmt.Println(sEnc)
+
+	sDec, _ := base64.StdEncoding.DecodeString(sEnc)
+	fmt.Println(string(sDec))
+
+	uEnc := base64.URLEncoding.EncodeToString([]byte(data))
+	fmt.Println(uEnc)
+	uDec, _ := base64.URLEncoding.DecodeString(uEnc)
+	fmt.Println(string(uDec))
+}
+
+// For example, TLS/SSL certificates use SHA256 to compute a certificate’s signature.
+func sha256Hashes() {
+	s := "sha256 this string"
+	h := sha256.New()
+	h.Write([]byte(s))
+	bs := h.Sum(nil)
+	fmt.Println(s)
+	fmt.Printf("%d %x\n", len(bs), bs)
+
+	h1 := sha512.New()
+	h1.Write([]byte(s))
+	bs1 := h1.Sum(nil)
+	fmt.Printf("%d %x\n", len(bs1), bs1)
+
+}
+
+func urlParse() {
+	s := "postgres://user:pass@host.com:5432/path?k=v&k1=v1#f"
+	u, err := url.Parse(s)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(u.Scheme)
+	fmt.Println(u.User.String())
+	fmt.Println(u.User.Username())
+	p, _ := u.User.Password()
+	fmt.Println(p)
+	fmt.Println(u.Host)
+	host, port, _ := net.SplitHostPort(u.Host)
+	fmt.Println(host)
+	fmt.Println(port)
+	fmt.Println(u.Path)
+	fmt.Println(u.Fragment)
+	fmt.Println(u.RawQuery)
+	m, _ := url.ParseQuery(u.RawQuery)
+	fmt.Println(m)
+	fmt.Println(m["k"][0])
+}
+
+func numberParse() {
+	f, _ := strconv.ParseFloat("1.234", 64)
+	fmt.Println(f)
+
+	i, _ := strconv.ParseInt("123", 0, 64)
+	fmt.Println(i)
+
+	d, _ := strconv.ParseInt("0x1c8", 0, 64)
+	fmt.Println(d)
+
+	u, _ := strconv.ParseUint("789", 0, 64)
+	fmt.Println(u)
+
+	k, _ := strconv.Atoi("135")
+	fmt.Println(k)
+
+	_, e := strconv.Atoi("wat")
+	fmt.Println(e)
+
+}
+
+func randomNum() {
+	p := fmt.Println
+	// 0 <= n < 100
+	p(rand.Intn(100), rand.Intn(100))
+	// 0.0 <= f < 1.0
+	p(rand.Float64())
+	// 5.0 <= f < 10.0
+	p((rand.Float64() * 5) + 5)
+
+	// nice
+	s1 := rand.NewSource(time.Now().UnixNano())
+	r1 := rand.New(s1)
+	for i := 0; i < 5; i++ {
+		fmt.Printf("%d ", r1.Intn(100))
+	}
+	p()
+
+	// If you seed a source with the same number,
+	// it produces the same sequence of random numbers.
+	s2 := rand.NewSource(42)
+	r2 := rand.New(s2)
+	for i := 0; i < 5; i++ {
+		fmt.Printf("%d ", r2.Intn(100))
+	}
+	p()
+	s3 := rand.NewSource(42)
+	r3 := rand.New(s3)
+	for i := 0; i < 5; i++ {
+		fmt.Printf("%d ", r3.Intn(100))
+	}
+}
+
+// time comment
+// 1: month (January, Jan, 01, etc)
+// 2: day (02)
+// 3: hour (15 is 3pm on a 24 hour clock)
+// 4: minute (04)
+// 5: second (05)
+// 6: year (2006)
+// 7: timezone (GMT-7 is MST)
+func timeFormat() {
+	p := fmt.Println
+	now := time.Now()
+	p(now)
+	then := time.Date(2022, 11, 19, 8, 20, 30, 10, time.UTC)
+	p(then)
+	p(then.Year(), then.Month(), then.Day())
+	p(then.Hour(), then.Minute(), then.Minute(), then.Nanosecond())
+	p(then.Location())
+	p(then.Weekday())
+	p(then.Before(now))
+	p(then.After(now))
+	p(then.Equal(now))
+
+	diff := now.Sub(then)
+	p(diff)
+	p(diff.Hours())
+	p(diff.Minutes())
+	p(diff.Seconds())
+	p(diff.Nanoseconds())
+
+	p(then.Add(diff))
+	p(then.Add(-diff))
+
+	fmt.Println(now.Unix())
+	fmt.Println(now.UnixMilli())
+	fmt.Println(now.UnixNano())
+	fmt.Println(time.Unix(0, 0))
+	fmt.Println(time.Unix(now.Unix(), 0))
+	fmt.Println(time.Unix(0, now.UnixNano()))
+
+	p(now.Format(time.RFC3339))
+	t1, _ := time.Parse(time.RFC3339, "2020-11-20T01:22:40Z")
+	p(t1)
+	p(now.Format("3:04PM"))
+	p(now.Format("Mon Jan _2 15:04:05 2006"))
+	p(now.Format("2006-01-02T15:04:05.999999-07:00"))
+	form := "3 04 PM"
+	t2, _ := time.Parse(form, "8 41 PM")
+	p(t2)
+
+	fmt.Printf("%d-%02d-%02dT%02d:%02d:%02d-00:00\n",
+		now.Year(), now.Month(), now.Day(),
+		now.Hour(), now.Minute(), now.Second())
+
+	asinc := "Mon Jan _2 15:04:05 2006"
+	_, e := time.Parse(asinc, "8:41PM")
+	p(e)
+
+	// 2006 01 02 03 04 05
+	// year month day hour minute second
+	cus := "2006-01-2 15:04:05"
+	t3, e := time.Parse(cus, "2022-11-20 23:19:59")
+	p(t3, e)
 }
 
 func xmls() {
