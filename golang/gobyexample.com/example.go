@@ -2,6 +2,8 @@ package main
 
 import (
 	"bytes"
+	"encoding/json"
+	"encoding/xml"
 	"errors"
 	"fmt"
 	"math"
@@ -29,7 +31,9 @@ import (
 // 7: timezone (GMT-7 is MST)
 
 func main() {
-	jsons()
+	timeFormat()
+	// xmls()
+	// jsons()
 	// regularExpressions()
 	// textTemplates()
 	// fmtFunc()
@@ -69,8 +73,113 @@ func main() {
 	// helloworld()
 }
 
+func timeFormat() {
+	fmt.Println("HELLO WORLD")
+}
+
+func xmls() {
+	coffee := &plant{ID: 27, Name: "coffee"}
+	coffee.Origin = []string{"Ethiopia", "Brazil"}
+	out, _ := xml.MarshalIndent(coffee, " ", " ")
+	fmt.Println(string(out))
+	fmt.Println(xml.Header + string(out))
+
+	var p plant
+	if err := xml.Unmarshal(out, &p); err != nil {
+		panic(err)
+	}
+	fmt.Println(p)
+
+	tomato := &plant{ID: 81, Name: "Tomato"}
+	tomato.Origin = []string{"Mexico", "California"}
+
+	type Nesting struct {
+		XMLName xml.Name `xml:"nesting"`
+		Plants  []*plant `xml:"parent>child>plant"`
+	}
+	nesting := &Nesting{}
+	nesting.Plants = []*plant{coffee, tomato}
+	out, _ = xml.MarshalIndent(nesting, " ", " ")
+	fmt.Println(string(out))
+}
+
+type plant struct {
+	XMLName xml.Name `xml:"plant"`
+	ID      int      `xml:"id,attr"`
+	Name    string   `xml:"name"`
+	Origin  []string `xml:"origin"`
+}
+
+func (p plant) String() string {
+	return fmt.Sprintf("plant id=%d,name=%v,origin=%v", p.ID, p.Name, p.Origin)
+}
+
 func jsons() {
-	fmt.Println("hello world")
+	bolB, _ := json.Marshal(true)
+	fmt.Println(bolB, string(bolB))
+	intB, _ := json.Marshal(1)
+	fmt.Println(intB, string(intB))
+	fltB, _ := json.Marshal(3.14)
+	fmt.Println(fltB, string(fltB))
+	strB, _ := json.Marshal("gopher")
+	fmt.Println(strB, string(strB))
+	slcD := []string{"apple", "peach", "pear"}
+	slcB, _ := json.Marshal(slcD)
+	slcB, _ = json.MarshalIndent(slcD, " ", " ")
+	fmt.Println(slcB, string(slcB))
+	mapD := map[string]int{"apple": 5, "pear": 7}
+	mapB, _ := json.Marshal(mapD)
+	fmt.Println(mapB, string(mapB))
+
+	res1D := &response1{
+		Page:   1,
+		Fruits: []string{"apple", "peach", "pear"},
+	}
+	res1B, _ := json.Marshal(res1D)
+	// pretty format
+	res1B, _ = json.MarshalIndent(res1D, " ", " ")
+	fmt.Println(string(res1B))
+
+	res2D := &response2{
+		Page:   1,
+		Fruits: []string{"apple", "peach", "pear"},
+	}
+	res2B, _ := json.Marshal(res2D)
+	fmt.Println(string(res2B))
+
+	byt := []byte(`{"num":3.14,"strs":["a","b"]}`)
+	// nice
+	var dat map[string]interface{}
+	if err := json.Unmarshal(byt, &dat); err != nil {
+		panic(err)
+	}
+	fmt.Println(dat)
+	num := dat["num"].(float64)
+	fmt.Println(num)
+	strs := dat["strs"].([]interface{})
+	str1 := strs[0].(string)
+	fmt.Println(str1)
+
+	str := `{"page":1,"fruits":["apple","pear"]}`
+	res := response2{}
+	json.Unmarshal([]byte(str), &res)
+	fmt.Println(res, res.Page)
+	fmt.Printf("%+v\n", res)
+
+	// stream JSON encodings
+	enc := json.NewEncoder(os.Stdout)
+	d := map[string]int{"apple": 5, "pear": 7}
+	enc.Encode(d)
+}
+
+type response1 struct {
+	Page   int
+	Fruits []string
+}
+
+type response2 struct {
+	Page   int      `json:"page"`
+	Fruits []string `json:"fruits"`
 }
 
 func regularExpressions() {
