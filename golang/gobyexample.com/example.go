@@ -5,10 +5,12 @@ import (
 	"bytes"
 	"crypto/sha256"
 	"crypto/sha512"
+	"embed"
 	"encoding/base64"
 	"encoding/json"
 	"encoding/xml"
 	"errors"
+	"flag"
 	"fmt"
 	"io"
 	"math"
@@ -81,12 +83,145 @@ func main() {
 	// writeFiles()
 	// lineFilters()
 	// filePaths()
-	directories()
+	// directories()
+	// temporaryFilesAndDir()
+	// embedDirective()
+	// testingAndBenchmarking()
+	// args()
+	flags()
+}
+
+func flags() {
+	wordPtr := flag.String("word", "foo", "a string")
+	numbPrt := flag.Int("numb", 12, "an int")
+	forkPrt := flag.Bool("fork", false, "a bool")
+
+	var svar string
+	flag.StringVar(&svar, "svar", "bar", "a string var")
+	flag.Parse()
+
+	fmt.Println("word:", *wordPtr)
+	fmt.Println("numb", *numbPrt)
+	fmt.Println("fork:", *forkPrt)
+	fmt.Println("svar:", svar)
+	// Note that the flag package requires all flags to appear before positional arguments (otherwise the flags will be interpreted as positional arguments).
+	fmt.Println("falg.Args: ", flag.Args())
+	fmt.Println("help : go run example.go -h")
+	fmt.Println("bad : go run example.go -numb=3 a1 a2 -fork=true")
+	fmt.Println("good : go run example.go -numb=3 -fork=true a1 a2")
+}
+
+func args() {
+	argsWithProg := os.Args
+	argsWithoutProg := os.Args[1:]
+	fmt.Println(argsWithProg)
+	fmt.Println(argsWithoutProg)
+	if len(os.Args) > 3 {
+		args := os.Args[3]
+		fmt.Println(args)
+	}
 
 }
 
+func testingAndBenchmarking() {
+	fmt.Println("exec:\n go test -v \n go test -bench=.")
+}
+
+// IntMin ...
+func IntMin(a, b int) int {
+	if a < b {
+		return a
+	}
+	return b
+}
+
+// nice
+func embedDirective() {
+	print(fileString)
+	print(string(fileByte))
+	c1, _ := folder.ReadFile("folder/file1.hash")
+	print(string(c1))
+}
+
+// go:embed is a compiler directive that allows programs to include arbitrary files and folders in the Go binary at build time
+//go:embed folder/single_file.txt
+var fileString string
+
+//go:embed folder/single_file.txt
+var fileByte []byte
+
+//go:embed folder/single_file.txt
+//go:embed folder/*.hash
+var folder embed.FS
+
+func temporaryFilesAndDir() {
+	f, err := os.CreateTemp("", "sample")
+	check(err)
+	fmt.Println("temp file name: ", f.Name())
+	defer os.Remove(f.Name())
+	n, err := f.Write([]byte{1, 2, 3, 4})
+	check(err)
+	fmt.Printf("write %d byte to %v\n", n, f.Name())
+
+	dname, err := os.MkdirTemp("", "sampledir")
+	check(err)
+	fmt.Println("temp dir name:", dname)
+	defer os.RemoveAll(dname)
+
+	fname := filepath.Join(dname, "file1")
+	err = os.WriteFile(fname, []byte("hello"), 0666)
+	check(err)
+	byt, err := os.ReadFile(fname)
+	check(err)
+	fmt.Println(fname, string(byt))
+}
+
 func directories() {
-	fmt.Println("HELLO WORLD")
+	err := os.Mkdir("subdir", 0755)
+	check(err)
+
+	defer os.RemoveAll("subdir")
+
+	createEmptyFile := func(name string) {
+		b := []byte("")
+		check(os.WriteFile(name, b, 0664))
+	}
+
+	createEmptyFile("subdir/file1")
+	err = os.MkdirAll("subdir/parent/child", 0755)
+	check(err)
+	createEmptyFile("subdir/parent/file2")
+	createEmptyFile("subdir/parent/file3")
+	createEmptyFile("subdir/parent/child/file4")
+
+	c, err := os.ReadDir("subdir/parent")
+	check(err)
+	fmt.Println("listing subdir/parent")
+	for _, entry := range c {
+		fmt.Println(" ", entry.Name(), entry.IsDir())
+	}
+
+	err = os.Chdir("subdir/parent/child")
+	check(err)
+	c, err = os.ReadDir(".")
+	fmt.Println("listing subdir/parent/child")
+	for _, entry := range c {
+		fmt.Println(" ", entry.Name(), entry.IsDir())
+	}
+
+	err = os.Chdir("../../..")
+	check(err)
+	fmt.Println("visiting subdir")
+	err = filepath.Walk("subdir", visit)
+	check(err)
+}
+
+func visit(p string, info os.FileInfo, err error) error {
+	if err != nil {
+		return err
+	}
+	fmt.Println(" ", p, info.IsDir())
+	return nil
 }
 
 func filePaths() {
