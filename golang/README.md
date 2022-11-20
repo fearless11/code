@@ -31,62 +31,25 @@
 
 ### 资料
 
-- 网站
-
-[Go指南 tour.go-zh.org](https://tour.go-zh.org/list)
-
-[Go例子 gobyexample.com](https://gobyexample.com/)
-
-[Go实效编程-effective_go](https://go-zh.org/doc/effective_go.html)
-
-[Go官网 pkg.go.dev](https://pkg.go.dev/)
-
-[Go文档中文 go-zh.org](https://go-zh.org/doc)
-
-[CodeReviewComments](https://github.com/golang/go/wiki/CodeReviewComments)
-
-[Go代码风格](https://github.com/golang-standards/project-layout)
-
-[go语言中文网 studygolang.com](https://studygolang.com/dl)
-
-[代理-goproxy.io](https://goproxy.io/)
-
-[命令-go-zh.org/cmd/go](https://go-zh.org/cmd/go/)
-
-- 书籍
-
-[Go实效编程](https://bingohuang.gitbooks.io/effective-go-zh-en/)
-
-[Go语言圣经](https://docs.hacknode.org/gopl-zh/ch0/ch0-01.html)
-
-[the-way-to-go中文](https://github.com/unknwon/the-way-to-go_ZH_CN/blob/master/eBook/directory.md)
-
-- 博客
-
-[如何写出优雅的golang代码](https://draveness.me/golang-101/)
-
-[Go文档汇集](https://www.topgoer.com/)
-
-[力扣-github.com/aQuaYi/LeetCode-in-Go](https://github.com/aQuaYi/LeetCode-in-Go)
-
-- 框架&实用
-
-[网站-gin](https://github.com/gin-gonic/gin)
-
-[网站-beego](https://github.com/astaxie/beego)
-
-[数据库-gorm](https://gorm.io/docs/query.html) 
-
-[文档管理-gin-swagger](https://github.com/swaggo/gin-swagger)
-
-[文档管理-redoc](https://github.com/Redocly/redoc)
-
-[https://mholt.github.io/json-to-go/](https://mholt.github.io/json-to-go/)
-
-Mock单元测试 [gomock](https://github.com/golang/mock) [sqlmock](https://github.com/DATA-DOG/go-sqlmock)  [httpmock](https://github.com/jarcoal/httpmock) [monkey](https://github.com/bouk/monkey)
-
-- 项目
-
-[beats社区](https://www.elastic.co/guide/en/beats/devguide/7.0/index.html)
-
-[grafana](https://github.com/grafana/grafana/blob/master/pkg/login/ldap_login.go)
+- [tour](https://tour.go-zh.org/list)
+- [gobyexample](https://gobyexample.com)
+- [go-zh-doc](https://go-zh.org/doc)
+- [goproxy](https://goproxy.io)
+- [go-pkg](https://pkg.go.dev)
+- [go-cmd](https://go-zh.org/cmd/go)
+- [effective_go](https://go-zh.org/doc/effective_go.html)
+- [CodeReviewComments](https://github.com/golang/go/wiki/CodeReviewComments)
+- [project-layout](https://github.com/golang-standards/project-layout/blob/master/README_zh.md)
+- [如何写出优雅的golang代码](https://draveness.me/golang-101/)
+- [LeetCode](https://github.com/aQuaYi/LeetCode-in-Go)
+- [Go实效编程](https://bingohuang.gitbooks.io/effective-go-zh-en/)
+- [Go语言圣经](https://docs.hacknode.org/gopl-zh/ch0/ch0-01.html)
+- [gin](https://github.com/gin-gonic/gin)
+- [beego](https://github.com/astaxie/beego)
+- [gorm](https://gorm.io/docs/query.html) 
+- [gin-swagger](https://github.com/swaggo/gin-swagger)
+- [redoc](https://github.com/Redocly/redoc)
+- [json-to-go](https://mholt.github.io/json-to-go/)
+- [mock](https://github.com/golang/mock) 
+- [sqlmock](https://github.com/DATA-DOG/go-sqlmock)
+- [httpmock](https://github.com/jarcoal/httpmock) 
