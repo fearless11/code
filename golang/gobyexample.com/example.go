@@ -198,6 +198,11 @@ func corsHeader(w http.ResponseWriter, req *http.Request) {
 	w.Write([]byte("ok"))
 }
 
+// CORS (Corss-origin resource sharing) 跨域共享资源
+// W3C标准,是一种机制
+// 同源条件：两个URL的协议、域名和端口必须都相同
+// 浏览器采用同源策略为安全性考虑实施的安全策略
+// 从一个域上加载的脚本不允许访问另外一个域的文档属性
 var cors = map[string]string{
 	"Access-Control-Allow-Headers":  "Accept, Authorization, Content-Type, Origin,X-Token",
 	"Access-Control-Allow-Methods":  "GET, DELETE, OPTIONS, PUT",
@@ -212,6 +217,11 @@ func httpServer() {
 	http.ListenAndServe(":8090", nil)
 }
 
+// context: 上下文环境, 为每一个进来的请求创造一个context,出去的函数接收这个context, 形成一个请求调用链。
+// 功能: 为请求设置deadline; 传递取消信号; 共享请求的value
+// 实际场景： 
+//  1. 当子goroutine需要用到父goroutine请求数据时，可用context的value保存传递
+//  2. 当父goroutine被取消或超时，可用context的Done通知所有子goroutine，阻止goroutine资源泄露
 func hello(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 	fmt.Println("server: hello handle started")

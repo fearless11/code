@@ -9,7 +9,7 @@ import (
 	"net/http"
 	"regexp"
 
-	"goinaction/search"
+	"go-in-action/search"
 )
 
 type (

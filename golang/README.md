@@ -67,13 +67,7 @@
 
 [Go文档汇集](https://www.topgoer.com/)
 
-[飞雪无情 www.flysnow.org](https://www.flysnow.org/)
-
-[狼人 blog.wolfogre.com](https://blog.wolfogre.com)
-
 [力扣-github.com/aQuaYi/LeetCode-in-Go](https://github.com/aQuaYi/LeetCode-in-Go)
-
-[Go核心36讲-极客时间-郝林](https://account.geekbang.org/dashboard/buy)
 
 - 框架&实用
 

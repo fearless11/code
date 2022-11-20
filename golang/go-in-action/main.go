@@ -4,8 +4,8 @@ import (
 	"log"
 	"os"
 
-	_ "goinaction/matchers"
-	"goinaction/search"
+	_ "go-in-action/matchers"
+	"go-in-action/search"
 )
 
 // init在main之前调用
