@@ -32,6 +32,7 @@ func Match(matcher Matcher, feed *Feed, searchTerm string, results chan<- *Resul
 
 }
 
+// Display ...
 func Display(results chan *Result) {
 	// 通道会一直被阻塞，直到有结果写入
 	// 一旦通道被关闭，for循环就会终止

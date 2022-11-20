@@ -7,6 +7,7 @@ import (
 
 var matchers = make(map[string]Matcher)
 
+// Run ...
 func Run(searchTerm string) {
 	feeds, err := RetrieveFeeds()
 	if err != nil {
