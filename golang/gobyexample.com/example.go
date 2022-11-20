@@ -16,8 +16,11 @@ import (
 	"math"
 	"math/rand"
 	"net"
+	"net/http"
 	"net/url"
 	"os"
+	"os/exec"
+	"os/signal"
 	"path/filepath"
 	"regexp"
 	"sort"
@@ -26,6 +29,7 @@ import (
 	s "strings"
 	"sync"
 	"sync/atomic"
+	"syscall"
 	"text/template"
 	"time"
 	"unicode/utf8"
@@ -88,7 +92,206 @@ func main() {
 	// embedDirective()
 	// testingAndBenchmarking()
 	// args()
-	flags()
+	// flags()
+	// flagSubcommand()
+	// envVar()
+	// httpClient()
+	// httpServer()
+	// httpCORS()
+	// spawningProcess()
+	// execProcess()
+	// signals()
+	exits()
+}
+
+func exits() {
+	fmt.Println("defer will not be run when using os.Exit")
+	defer fmt.Println("!")
+	os.Exit(3)
+}
+
+func signals() {
+	sigs := make(chan os.Signal, 1)
+	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+	done := make(chan bool, 1)
+	go func() {
+		sig := <-sigs
+		fmt.Println(sig)
+		done <- true
+	}()
+
+	fmt.Println("awaiting signal")
+	<-done
+	fmt.Println("exiting")
+}
+
+func execProcess() {
+	binary, lookErr := exec.LookPath("ls")
+	if lookErr != nil {
+		panic(lookErr)
+	}
+
+	args := []string{"ls", "-a", "-l", "-h"}
+
+	env := os.Environ()
+	execErr := syscall.Exec(binary, args, env)
+	if execErr != nil {
+		panic(execErr)
+	}
+}
+
+func spawningProcess() {
+	dateCmd := exec.Command("date", "+%F")
+	dateOut, err := dateCmd.Output()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("> date")
+	fmt.Println(string(dateOut))
+
+	_, err = exec.Command("date", "-x").Output()
+	if err != nil {
+		switch e := err.(type) {
+		case *exec.Error:
+			fmt.Println("failed executing:", err)
+		case *exec.ExitError:
+			fmt.Println("command exit rc=", e.ExitCode())
+		default:
+			panic(err)
+		}
+	}
+
+	grepCmd := exec.Command("grep", "hello")
+	grepIn, _ := grepCmd.StdinPipe()
+	grepOut, _ := grepCmd.StdoutPipe()
+	grepCmd.Start()
+	grepIn.Write([]byte("hello grep\ngoodbye grep"))
+	grepIn.Close()
+	grepBytes, _ := io.ReadAll(grepOut)
+	grepCmd.Wait()
+	fmt.Println("> grep hello")
+	fmt.Println(string(grepBytes))
+
+	lsCmd := exec.Command("bash", "-c", "ls -a -l -h")
+	lsOut, err := lsCmd.Output()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("> ls -a -l -h")
+	fmt.Println(string(lsOut))
+}
+
+// curl -I localhost:8090/cors
+func httpCORS() {
+	mux := http.NewServeMux()
+	mux.HandleFunc("/cors", corsHeader)
+	srv := http.Server{Addr: ":8090", Handler: mux}
+	err := srv.ListenAndServe()
+	check(err)
+}
+
+func corsHeader(w http.ResponseWriter, req *http.Request) {
+	for k, v := range cors {
+		w.Header().Set(k, v)
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("ok"))
+}
+
+var cors = map[string]string{
+	"Access-Control-Allow-Headers":  "Accept, Authorization, Content-Type, Origin,X-Token",
+	"Access-Control-Allow-Methods":  "GET, DELETE, OPTIONS, PUT",
+	"Access-Control-Allow-Origin":   "*",
+	"Access-Control-Expose-Headers": "Date",
+	"Cache-Control":                 "no-cache, no-store, must-revalidate",
+}
+
+func httpServer() {
+	http.HandleFunc("/hello", hello)
+	http.HandleFunc("/headers", headers)
+	http.ListenAndServe(":8090", nil)
+}
+
+func hello(w http.ResponseWriter, req *http.Request) {
+	ctx := req.Context()
+	fmt.Println("server: hello handle started")
+	defer fmt.Println("server: hello handle ended")
+
+	select {
+	case <-time.After(10 * time.Second):
+		fmt.Fprintf(w, "%v", "hello\n")
+	case <-ctx.Done():
+		err := ctx.Err()
+		fmt.Println("server:", err)
+		internalError := http.StatusInternalServerError
+		http.Error(w, err.Error(), internalError)
+	}
+}
+
+func headers(w http.ResponseWriter, req *http.Request) {
+	for name, headers := range req.Header {
+		for _, h := range headers {
+			fmt.Fprintf(w, "%v:%v\n", name, h)
+
+		}
+	}
+}
+
+func httpClient() {
+	resp, err := http.Get("https://gobyexample.com")
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+	fmt.Println("response code:", resp.StatusCode, "status:", resp.Status)
+	scanner := bufio.NewScanner(resp.Body)
+	for i := 0; scanner.Scan() && i < 3; i++ {
+		fmt.Println(scanner.Text())
+	}
+
+	if err := scanner.Err(); err != nil {
+		panic(err)
+	}
+}
+
+func envVar() {
+	os.Setenv("FOO", "1")
+	fmt.Println("FOO:", os.Getenv("FOO"))
+	fmt.Println("BAR:", os.Getenv("BAR"))
+	for _, e := range os.Environ() {
+		pair := strings.SplitN(e, "=", 2)
+		fmt.Println(pair[0])
+	}
+}
+
+func flagSubcommand() {
+	fooCmd := flag.NewFlagSet("foo", flag.ExitOnError)
+	fooEnable := fooCmd.Bool("enable", false, "enable")
+	fooName := fooCmd.String("name", "", "name")
+	barCmd := flag.NewFlagSet("bar", flag.ExitOnError)
+	barLevel := barCmd.Int("level", 0, "level")
+
+	if len(os.Args) < 2 {
+		fmt.Println("expected 'foo' or 'bar' subcommands")
+		os.Exit(1)
+	}
+
+	switch os.Args[1] {
+	case "foo":
+		fooCmd.Parse(os.Args[2:])
+		fmt.Println("subcommand 'foo'")
+		fmt.Println("  enable:", *fooEnable)
+		fmt.Println("  name:", *fooName)
+		fmt.Println("  tail:", fooCmd.Args())
+	case "bar":
+		barCmd.Parse(os.Args[2:])
+		fmt.Println("subcommand 'bar'")
+		fmt.Println("  level:", *barLevel)
+		fmt.Println("  tail:", barCmd.Args())
+	default:
+		fmt.Println("expected 'foo' or 'bar' subcommands")
+		os.Exit(1)
+	}
 }
 
 func flags() {
@@ -1169,6 +1372,7 @@ func channelClose() {
 	<-done
 }
 
+// nice
 // Basic sends and receives on channels are blocking.
 // Must be prepared at the same time
 func channelNonBlock() {
