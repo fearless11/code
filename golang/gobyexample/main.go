@@ -1,4 +1,5 @@
 package main
+// https://gobyexample.com/
 
 import (
 	"bufio"
@@ -34,8 +35,6 @@ import (
 	"time"
 	"unicode/utf8"
 )
-
-// https://gobyexample.com/
 
 func main() {
 	// helloworld()
